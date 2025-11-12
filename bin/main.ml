@@ -4,6 +4,7 @@ open Utils
 
 open Player
 open Snake
+open Entity
 
 open Engine
 open Player
@@ -26,6 +27,7 @@ let () = set camel_initial_position Camel
 
 let snake_initial_position = random_position ()
 let () = set snake_initial_position Snake
+let snake_instance = new entity snake_initial_position
 
 
 
@@ -33,7 +35,7 @@ let () = set snake_initial_position Snake
 
 let () = Queue.add (fun () -> player (fun () -> camel camel_initial_position)) queue
 
-let () = Queue.add (fun () -> player (fun () -> snake snake_initial_position)) queue
+let () = Queue.add (fun () -> player (fun () -> snake snake_instance)) queue
 
 
 (* Début du jeu *)
