@@ -6,6 +6,7 @@ open Player
 open Snake
 open Spider
 open Entity
+open Monkey
 
 open Engine
 open Player
