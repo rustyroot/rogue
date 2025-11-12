@@ -65,51 +65,54 @@ let random_direction () : int * int =
 
 (** [elephant current_pos]  TODO *)
 let rec elephant (elephant_instance : elephant) : unit =
+  
+  (match elephant_instance#get_state with
+   | Stunned -> Printf.printf "Stunned : %d\n" elephant_instance#get_stunned;
+   | Charging -> Printf.printf "Charging : %d\n" elephant_instance#get_charge;
+   |_ -> Printf.printf "Other\n";);
   let current_position = elephant_instance#get_pos in
   let new_position =
     match elephant_instance#get_state with
     | Looking -> 
-      begin
-        match (camel_on_sight current_position) with
-        | (0, 0) -> current_position ++ random_direction ()
-        | direction ->
-          (
-            elephant_instance#set_charge_direction direction;
-            elephant_instance#set_charge 9;
-            elephant_instance#set_state Charging;
-            current_position ++ direction
-          )
-      end
+       begin
+         match (camel_on_sight current_position) with
+         | (0, 0) -> current_position ++ random_direction ()
+         | direction ->
+            (
+              elephant_instance#set_charge_direction direction;
+              elephant_instance#set_charge 9;
+              elephant_instance#set_state Charging;
+              current_position ++ direction
+            )
+       end
 
     | Charging -> 
-      elephant_instance#set_charge (elephant_instance#get_charge -1);
-      if elephant_instance#get_charge = 0 then
-        begin
-          elephant_instance#set_state Looking
-        end;
-      current_position ++ elephant_instance#get_charge_direction
-    
-    | Stunned -> 
-      elephant_instance#set_stunned (elephant_instance#get_stunned -1);
-      if elephant_instance#get_stunned = 0 then
-        begin
-          elephant_instance#set_state Looking
-        end;
-      current_position
-  in
+       elephant_instance#set_charge (elephant_instance#get_charge -1);
+       if elephant_instance#get_charge = 0 then
+         begin
+           elephant_instance#set_state Looking
+         end;
+       current_position ++ elephant_instance#get_charge_direction
 
+    | Stunned -> 
+       elephant_instance#set_stunned (elephant_instance#get_stunned -1);
+       if elephant_instance#get_stunned = 0 then
+         begin
+           elephant_instance#set_state Looking
+         end;
+       current_position
+  in
+  
   let new_position = move current_position new_position in
   let is_blocked = (new_position = current_position) in
-  begin
   match (is_blocked, elephant_instance#get_state) with
-    | (true, Charging) ->
-      begin
-        elephant_instance#set_state Stunned;
-        elephant_instance#set_stunned 20
-      end
-    | _ -> ()
-  end;
-
-  elephant_instance#set_pos new_position;
-  perform End_of_turn;
-  elephant elephant_instance
+  | (true, Charging) ->
+     begin
+       elephant_instance#set_state Stunned;
+       elephant_instance#set_stunned 20
+     end
+  | _ -> ();
+         
+         elephant_instance#set_pos new_position;
+         perform End_of_turn;
+         elephant elephant_instance
