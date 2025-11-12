@@ -66,8 +66,9 @@ let random_direction () : int * int =
 (** [elephant current_pos]  TODO *)
 let rec elephant (elephant_instance : elephant) : unit =
   let current_position = elephant_instance#get_pos in
+  let state_start = elephant_instance#get_state in
   let new_position =
-    match elephant_instance#get_state with
+    match state_start with
     | Looking -> 
       begin
         match (camel_on_sight current_position) with
@@ -101,7 +102,7 @@ let rec elephant (elephant_instance : elephant) : unit =
   let new_position = move current_position new_position in
   let is_blocked = (new_position = current_position) in
   begin
-  match (is_blocked, elephant_instance#get_state) with
+    match (is_blocked, elephant_instance#get_state) with
     | (true, Charging) ->
       begin
         elephant_instance#set_state Stunned;

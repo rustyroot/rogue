@@ -1,5 +1,9 @@
 open World
 
+(** Point du joueur *)
+let point = ref 0
+
+
 (** Déplacement d'une entité *)
 
 (** Opérateur somme pour les paires d'entiers*)
@@ -15,5 +19,8 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
       let character = get old_position in
       set old_position Empty ;
       set new_position character ;
-      new_position   
+      new_position
+  | Camel ->
+    point := !point - 5;
+    old_position
   | _ -> old_position
