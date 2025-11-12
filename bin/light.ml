@@ -56,6 +56,6 @@ let enlighten_the_world (camel_position : int * int) : unit =
   for i = 0 to (width-1) do
     for j = 0 to (height-1) do
       let path_of_light = get_touched_cells camel_position (i, j) in
-      is_enlightened.(i).(j) = not (is_stoped path_of_light);
+      is_enlightened.(i).(j) <- not (is_stoped path_of_light);
     done; 
   done;
