@@ -40,6 +40,10 @@ let spider_initial_position = random_position ()
 let () = set spider_initial_position Spider
 let spider_instance = new entity spider_initial_position
 
+let monkey_initial_position = random_position ()
+let () = set monkey_initial_position Monkey
+let monkey_instance = new entity monkey_initial_position
+
 
 
 (* La file contient uniquement le tour du chameau *)
@@ -53,6 +57,8 @@ let () = Queue.add (fun () -> player (fun () -> elephant elephant_instance)) que
 let () = Queue.add (fun () -> player (fun () -> elephant elephant_instance)) queue
 
 let () = Queue.add (fun () -> player (fun () -> spider spider_instance)) queue
+
+let () = Queue.add (fun () -> player (fun () -> monkey monkey_instance)) queue
 
 (* Début du jeu *)
 let () = run_queue ()

@@ -12,9 +12,9 @@ open File
     renvoie la position du chameau*)
 let get_pos_camel () : int*int = 
   let rec boucle (i : int) (j : int) : int*int = 
-    if i >= height then failwith "pas de chameau" 
+    if i >= width then failwith "pas de chameau" 
     else begin
-      if j >= width then boucle (i+1) 0 
+      if j >= height then boucle (i+1) 0 
       else match get (i,j) with
         | Camel -> (i,j)
         | _ -> boucle i (j+1)
@@ -42,25 +42,26 @@ let reconstruct_path (map : (int*int) array array) (goal : int*int) (start : int
 let get_neighbors (pos : int*int) : (int*int) list =
   let lst = ref [] in
   let (l,c) = pos in
-  if l+1 < height then match world.(l+1).(c) with |Empty -> lst := (l+1,c)::(!lst) |_ -> () else () ;
+  if l+1 < width then match world.(l+1).(c) with |Empty -> lst := (l+1,c)::(!lst) |_ -> () else () ;
   if l-1 >=0 then match world.(l-1).(c) with |Empty -> lst := (l-1,c)::(!lst) |_ -> () else () ;
-  if c+1 < width then match world.(l).(c+1) with |Empty -> lst := (l,c+1)::(!lst) |_ -> () else () ;
+  if c+1 < height then match world.(l).(c+1) with |Empty -> lst := (l,c+1)::(!lst) |_ -> () else () ;
   if c-1 <= 0 then match world.(l).(c-1) with |Empty -> lst := (l,c-1)::(!lst) |_ -> () else () ;
   !lst
 
 let a_star (start:int*int) (goal:int*int) (h:(int*int) -> (int*int) -> int) : (int*int) list =
   let file = file_create () in
-  let map = Array.make_matrix height width (-1,-1) in
-  let vrai_scores = Array.make_matrix height width max_int in
-  let faux_scores = Array.make_matrix height width max_int in
+  let map = Array.make_matrix width height (-1,-1) in
+  let vrai_scores = Array.make_matrix width height max_int in
+  let faux_scores = Array.make_matrix width height max_int in
   let (ls,cs) = start in
   map.(ls).(cs) <- (ls,cs);
   vrai_scores.(ls).(cs) <- 0;
   faux_scores.(ls).(cs) <- h start goal;
-  let rec boucle current =
-    if current = goal then reconstruct_path map goal start else begin
+  let rec boucle () =
       if file_is_empty file then failwith "No path" 
       else begin
+        let current = file_pop file in
+        if current = goal then reconstruct_path map goal start else begin
         let neighbors = get_neighbors current in
         let rec update_neighbors neighbors =
           match neighbors with
@@ -74,16 +75,15 @@ let a_star (start:int*int) (goal:int*int) (h:(int*int) -> (int*int) -> int) : (i
               if not (file_mem file (l,c)) then
                 file_push file (l,c) faux_scores.(l).(c)
             );
-            update_neighbors tail
+            update_neighbors tail 
           )
         in
         update_neighbors neighbors;
-        boucle (file_pop file)
+        boucle ()
       end
     end
   in
-  boucle (file_pop file)
-
+  boucle ()
 
 
 let next (pos : int*int) : int*int= 
