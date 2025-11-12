@@ -1,7 +1,10 @@
 open World
 open Ui
 open Utils
+
 open Player
+open Snake
+
 open Engine
 open Player
 
@@ -21,11 +24,17 @@ let () =
 let camel_initial_position = random_position ()
 let () = set camel_initial_position Camel
 
+let snake_initial_position = random_position ()
+let () = set snake_initial_position Snake
+
 
 
 (* La file contient uniquement le tour du chameau *)
 
 let () = Queue.add (fun () -> player (fun () -> camel camel_initial_position)) queue
+
+let () = Queue.add (fun () -> player (fun () -> snake snake_initial_position)) queue
+
 
 (* Début du jeu *)
 let () = run_queue ()
