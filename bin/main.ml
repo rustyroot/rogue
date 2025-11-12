@@ -7,6 +7,7 @@ open Snake
 open Elephant
 open Spider
 open Entity
+open Monkey
 
 open Engine
 open Player

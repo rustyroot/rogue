@@ -10,12 +10,14 @@ let string_of_cell : cell -> string = function
   | Elephant   -> "\u{1F418}"
   | Spider     -> "\u{1F577}"
   | Egg        -> "\u{1F95A}"
+  | Monkey     -> "\u{1F412}"
 
 (* Codes des emojis pour les animaux pertinents
    serpent : "\u{1F40D}"
    éléphant : "\u{1F418}"
    araignée : "\u{1F577} "
    oeuf : "\u{1F95A}"
+   monkey "\u{1F412}"
    Des sites comme l'emojipedia peuvent vous donner plus de codes.
 *)
 
