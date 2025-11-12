@@ -1,6 +1,7 @@
 open World
 open Ui
 open Utils
+open Light
 
 open Player
 open Snake
@@ -39,7 +40,7 @@ let spider_initial_position = random_position ()
 let () = set spider_initial_position Spider
 let spider_instance = new entity spider_initial_position
 
-
+let () = enlighten_the_world camel_initial_position
 
 (* La file contient uniquement le tour du chameau *)
 

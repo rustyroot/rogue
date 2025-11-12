@@ -27,7 +27,7 @@ let draw_world () : image =
   @@ Array.to_list
   @@ Array.map
        (fun column -> I.vcat @@ Array.to_list @@ Array.map draw_cell column)
-       world
+       shadowed_world
 
 
 open Notty_unix

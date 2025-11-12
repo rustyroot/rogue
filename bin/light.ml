@@ -1,6 +1,7 @@
 open World
 
 let rec get_touched_cells (src : int * int) (dst : int * int) : (int * int) list =
+  if src = dst then [src] else
   let x, y = src in
   let x', y' = dst in
   if x' < x then (* On réduit les cas étudiés en s'intéressant uniquement au droite orientée allant de gauche à droite*)
@@ -33,29 +34,29 @@ let rec get_touched_cells (src : int * int) (dst : int * int) : (int * int) list
         in
         let rec cut_out_of_range (cell_list : (int*int) list) (begin_pass : bool) : (int*int) list =
           match cell_list with
-          | head::tail when head = (x', y') -> [head]
+          | head::_ when head = (x', y') -> [head]
           | head::tail when head = (x, y) -> head::(cut_out_of_range tail true)
           | head::tail when begin_pass -> head::(cut_out_of_range tail begin_pass)
-          | head::tail -> cut_out_of_range tail begin_pass
-          | [] -> failwith "get_touched_cells failed"
+          | _::tail -> cut_out_of_range tail begin_pass
+          | [] -> []
         in
         cut_out_of_range (construct_list x (f_right_border (x-1)) []) false
       end
 
 let enlighten_the_world (camel_position : int * int) : unit =
-  let rec is_stoped (path_of_light : (int * int) list) : bool =
+  let rec enlight (path_of_light : (int * int) list) : unit =
     match path_of_light with
-    | __::[] -> false 
-    | (i, j)::tail -> 
-      if get (i, j) = Empty then
-        is_stoped tail
-      else
-        true
-    | [] -> false (* exhaustive patern matching *) 
+    | (i, j)::tail when get (i, j) = Empty -> 
+      begin
+        shadowed_world.(i).(j) <- world.(i).(j); 
+        enlight tail
+      end
+    | (i, j)::_ -> shadowed_world.(i).(j) <- world.(i).(j)
+    | [] -> ()
   in  
-  for i = 0 to (width-1) do
-    for j = 0 to (height-1) do
+  for i = 0 to 0 do
+    for j = 0 to 0 do
       let path_of_light = get_touched_cells camel_position (i, j) in
-      is_enlightened.(i).(j) <- not (is_stoped path_of_light);
+      List.iter (fun (i, j) -> ) path_of_light 
     done; 
   done;
