@@ -4,6 +4,7 @@ open Utils
 
 open Player
 open Snake
+open Elephant
 open Spider
 open Entity
 
@@ -30,6 +31,10 @@ let snake_initial_position = random_position ()
 let () = set snake_initial_position Snake
 let snake_instance = new entity snake_initial_position
 
+let elephant_initial_position = random_position ()
+let () = set elephant_initial_position Elephant
+let elephant_instance = new elephant elephant_initial_position
+
 let spider_initial_position = random_position ()
 let () = set spider_initial_position Spider
 let spider_instance = new entity spider_initial_position
@@ -41,6 +46,10 @@ let spider_instance = new entity spider_initial_position
 let () = Queue.add (fun () -> player (fun () -> camel camel_initial_position)) queue
 
 let () = Queue.add (fun () -> player (fun () -> snake snake_instance)) queue
+
+let () = Queue.add (fun () -> player (fun () -> elephant elephant_instance)) queue
+
+let () = Queue.add (fun () -> player (fun () -> elephant elephant_instance)) queue
 
 let () = Queue.add (fun () -> player (fun () -> spider spider_instance)) queue
 
