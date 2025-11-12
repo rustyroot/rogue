@@ -2,6 +2,9 @@ open World
 
 (** Point du joueur *)
 let point = ref 0
+let start_point = 9
+let update_point (point : int) = 
+  let length = int_of_float (floor (log10 (float_of_int point) ) )  +1
 
 
 (** Déplacement d'une entité *)
