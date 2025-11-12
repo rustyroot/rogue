@@ -1,0 +1,7 @@
+Open ../bin/Light
+
+let _ = get_touched_cells 0 0 0 4
+let _ = get_touched_cells 0 0 5 0
+let _ = get_touched_cells 0 0 5 3
+let _ = get_touched_cells 5 3 0 0
+let _ = get_touched_cells 2 0 3 3
