@@ -1,5 +1,5 @@
 (** Type du contenu d'une case du monde. *)
-type cell = Empty | Cactus | Camel | Snake | Elephant | Spider | Egg | HUD of char
+type cell = Empty | Cactus | Camel | Snake | Elephant | Spider | Egg | Monkey | HUD of char
 
 let width, height = 50, 30
 
