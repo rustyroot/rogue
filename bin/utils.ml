@@ -18,7 +18,10 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
       set new_position character ;
       new_position
   | Camel ->
-    point := !point - 5;
+    if get old_position != Camel then (* Le chameau ne se retire pas de point quand il se recontre lui même *)
+      point := !point - 5
+    else
+      ();
     old_position
   | _ -> old_position
 

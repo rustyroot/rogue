@@ -27,6 +27,7 @@ let () =
 
 let camel_initial_position = random_position ()
 let () = set camel_initial_position Camel
+let camel_instance = new entity camel_initial_position
 
 let snake_initial_position = random_position ()
 let () = set snake_initial_position Snake
@@ -40,27 +41,10 @@ let spider_initial_position = random_position ()
 let () = set spider_initial_position Spider
 let spider_instance = new entity spider_initial_position
 
-let () = 
-  begin
-    for i = 0 to (width - 1) do 
-      set (i, 0) (HUD ' ')
-    done
-  end
-
-let () = set (0, 0) (HUD 'P')
-let () = set (1, 0) (HUD 'o')
-let () = set (2, 0) (HUD 'i')
-let () = set (3, 0) (HUD 'n')
-let () = set (4, 0) (HUD 't')
-let () = set (5, 0) (HUD 's')
-let () = set (7, 0) (HUD ':')
-
-
-
 
 (* La file contient uniquement le tour du chameau *)
 
-let () = Queue.add (fun () -> player (fun () -> camel camel_initial_position)) queue
+let () = Queue.add (fun () -> player (fun () -> camel camel_instance)) queue
 
 let () = Queue.add (fun () -> player (fun () -> snake snake_instance)) queue
 
