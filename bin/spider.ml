@@ -70,6 +70,5 @@ let rec spider (spider_instance : entity) : unit =
   else
     ();
 
-  Printf.fprintf stderr "test\n";
   perform End_of_turn;  
   spider spider_instance
