@@ -6,7 +6,21 @@ open Effect.Deep
 open Engine
 open Entity
 open World
-open Egg
+
+class egg entity_instance =
+  object
+    inherit entity entity_instance
+    val mutable generation_remaining = 3
+    val mutable nb_turns_before_generation = 20
+
+
+    method get_generation_remaining = generation_remaining
+    method set_generation_remaining new_generation_remaining = generation_remaining <- new_generation_remaining
+
+    method get_nb_turns_before_generation = nb_turns_before_generation
+    method set_nb_turns_before_generation new_nb_turns_before_generation =nb_turns_before_generation <- new_nb_turns_before_generation
+
+  end
 
 (** [random_direction ()]
     Choisie alléatoirement une direction et renvoie le changement à appliquer sur les coordonnées
@@ -20,39 +34,6 @@ let random_direction () : int * int =
   | 3 -> (0, - 1) (*Up*)
   | _ -> (0, 0) (*Exhaustive pattern*)
 
-exception No_cell_avaible
-
-let get_free_nearby_cell (position : int * int) : (int * int) list =
-  let x, y = position in
-  let rec check_nearby_cell (i:int) (j:int) (free_nearby_cell : (int * int) list): (int * int) list =
-    if i <= 1 then
-      match get (x+i, y+j) with
-      | Empty -> check_nearby_cell (i+1) j ((x+i, y+j)::free_nearby_cell)
-      | _ -> check_nearby_cell (i+1) j free_nearby_cell
-    else
-      if j <= 1 then
-        check_nearby_cell (-1) (j+1) free_nearby_cell
-      else
-        free_nearby_cell
-  in
-  check_nearby_cell (-1) (-1) []
-  
-let get_random_nearby_cell (position : int * int) : (int * int) =
-  let free_nearby_cell = get_free_nearby_cell position in
-  let nb_free_nearby_cell = List.length free_nearby_cell in
-  if nb_free_nearby_cell = 0 then
-    raise No_cell_avaible
-  else
-    List.nth free_nearby_cell (Random.int nb_free_nearby_cell)
-
-let spawn_egg (spider_position : int * int) : unit =
-  let egg_position = get_random_nearby_cell spider_position in
-  let egg_instance = new entity egg_position in
-  set egg_position Egg;
-  Queue.add (fun () -> player (fun () -> egg egg_instance)) queue
-
-
-
 (** [spider spider_instance] effectue tous les prochains tours de l'araigné à partir de la position 
     [current_pos] (choisir aléatoirement une entrée, se déplacer en conséquence, recommencer)*)
 let rec spider (spider_instance : entity) : unit =
@@ -65,10 +46,49 @@ let rec spider (spider_instance : entity) : unit =
 
   (* try to spawn an egg *)
   if (Random.int 100) = 1 then
-    try spawn_egg new_position with
-    | No_cell_avaible -> ()
+    try spawn_egg new_position with No_cell_avaible -> ();
   else
     ();
 
   perform End_of_turn;  
   spider spider_instance
+
+and spawn_spider (egg_position: int * int) =
+  let spider_position = get_random_nearby_cell egg_position in
+  let spider_instance = new entity spider_position in
+  set spider_position Spider;
+  Queue.add (fun () -> player (fun () -> spider spider_instance)) queue
+
+and egg (egg_instance : egg) : unit =
+
+  let nb_turns_before_generation = egg_instance#get_nb_turns_before_generation in
+  if nb_turns_before_generation > 0 then
+    begin
+      egg_instance#set_nb_turns_before_generation (nb_turns_before_generation - 1);
+    end
+  else
+    begin
+      let egg_position = egg_instance#get_pos in
+      begin
+      try spawn_spider egg_position with No_cell_avaible -> ();
+      end;
+      egg_instance#set_nb_turns_before_generation 20;
+      egg_instance#set_generation_remaining (egg_instance#get_generation_remaining -1);
+    end;
+  
+  if egg_instance#get_generation_remaining > 0 then
+    begin
+      perform End_of_turn;
+      egg egg_instance
+    end
+  else
+    set egg_instance#get_pos Empty;
+  
+and spawn_egg (spider_position : int * int) : unit =
+  let egg_position = get_random_nearby_cell spider_position in
+  let egg_instance = new egg egg_position in
+  set egg_position Egg;
+  Queue.add (fun () -> player (fun () -> egg egg_instance)) queue
+
+
+
