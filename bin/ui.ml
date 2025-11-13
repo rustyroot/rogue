@@ -72,7 +72,7 @@ let string_of_cell : cell -> string = function
   | Spider     -> "\u{1F577}"
   | Egg        -> "\u{1F95A}"
   | Monkey     -> "\u{1F412}"
-  | Fog        -> "\u{1F7E6}"
+  | Fog        -> "░░"
 
 
 (** Fonctions de création de l'image correspondant à l'état actuel du monde.*)
