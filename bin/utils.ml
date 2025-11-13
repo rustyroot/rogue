@@ -25,8 +25,24 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
     old_position
   | _ -> old_position
 
-exception No_cell_avaible
+(** [random_direction ()]
+    Choisie alléatoirement une direction et renvoie le changement à appliquer sur les coordonnées
+    du serpent pour aller dans la direction correspondante.*)
+let random_direction () : int * int =
+  let random_move = (Random.int 4) in
+  match random_move with
+  | 0 -> (- 1, 0) (*Left*)
+  | 1 -> (+ 1, 0) (*Right*)
+  | 2 -> (0, + 1) (*Down*)
+  | 3 -> (0, - 1) (*Up*)
+  | _ -> (0, 0) (*Exhaustive pattern*)
 
+(*****************************************************************************)
+
+(* Obtenir une case libre adjacente *)
+
+(** [get_free_nearby_cell position] renvoit la liste des cases [Empty] parmi 
+    le carré de 3x3 cases autour de position. *)
 let get_free_nearby_cell (position : int * int) : (int * int) list =
   let x, y = position in
   let rec check_nearby_cell (i:int) (j:int) (free_nearby_cell : (int * int) list): (int * int) list =
@@ -42,6 +58,11 @@ let get_free_nearby_cell (position : int * int) : (int * int) list =
   in
   check_nearby_cell (-1) (-1) []
   
+exception No_cell_avaible
+
+(** [get_random_nearby_cell position] choisit aléatoirement une cases [Empty] parmi 
+    le carré de 3x3 cases autour de position. 
+    Si aucune n'est libre alors [No_cell_avaible] est soulevée. *)
 let get_random_nearby_cell (position : int * int) : (int * int) =
   let free_nearby_cell = get_free_nearby_cell position in
   let nb_free_nearby_cell = List.length free_nearby_cell in
