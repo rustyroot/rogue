@@ -111,14 +111,14 @@ let rec elephant (elephant_instance : elephant) : unit =
   let new_position = move current_position new_position in
   let is_blocked = (new_position = current_position) in
   (* si true, c'est que l'éléphant n'a pas réussi à charger en avant, il a été bloqué et passe en [Stunned] *)
-  match (is_blocked, elephant_instance#get_state) with
+  (match (is_blocked, elephant_instance#get_state) with
   | (true, Charging) ->
     begin
       elephant_instance#set_state Stunned;
       elephant_instance#set_stunned 20
     end
-  | _ -> ();
-
+  | _ -> ()
+  );
   elephant_instance#set_pos new_position;
   perform End_of_turn;
   elephant elephant_instance
