@@ -6,6 +6,7 @@ open Effect.Deep
 open Engine
 open Entity
 open Light
+open Flag
 
 (** [keyboard_direction ()] attend un évènement dans le terminal.
     Si ECHAP est pressée, arrête le jeu.
@@ -20,8 +21,6 @@ let keyboard_direction () : int * int =
   | `Key (`Arrow `Up,    _) -> (0, - 1)
   | _                       -> (0, 0)
 
-
-
 (** [caml current_pos] effectue tous les prochains tours du chameau à partir de la position 
     [current_pos] (attendre une entrée, se déplacer en conséquence, recommencer)*)
 let rec camel (camel_instance : entity) : unit =
@@ -30,6 +29,9 @@ let rec camel (camel_instance : entity) : unit =
   let new_position = move current_position new_position in
   camel_instance#set_pos new_position;
   point := !point + 1;
-  enlighten_the_world new_position;
+  if is_curse_darkness_on then
+    enlighten_the_world new_position
+  else
+    ();
   perform End_of_turn;
   camel camel_instance

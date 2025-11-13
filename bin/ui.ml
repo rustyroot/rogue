@@ -1,6 +1,7 @@
 open Notty
 open World
 open Utils
+open Flag
 
 (* HUD *)
 
@@ -88,7 +89,7 @@ let draw_world () : image =
       @@ Array.to_list
       @@ Array.map
           (fun column -> I.vcat @@ Array.to_list @@ Array.map draw_cell column)
-          shadowed_world
+          (if is_curse_darkness_on then shadowed_world else world)
     )
 
 
