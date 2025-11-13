@@ -20,8 +20,22 @@ make build
 
 ## Exemples d'usages
 
+<table>
+    <tbody>
+        <tr><td>Paramètre</td><td>Autre nom</td><td>Résultat</td></tr>
+        <tr><td><pre><code class="sh">--darkness-on</code></pre></td>
+        <td><pre><code class="sh">-d</code></pre></td>
+        <td>Active le brouillard</td></tr>
+        <tr><td><pre><code class="sh">--level-activated</code></pre></td>
+        <td><pre><code class="sh">-l</code></pre></td>
+        <td>Active le système de jeu avec des niveaux</td></tr>
+    </tbody>
+</table>
+
 ```sh
 ./rogue
+./rogue -l -d
+./rogue --darkness-on
 ```
 
 ou
@@ -44,13 +58,17 @@ Définie la matrice contenant les différents éléments constituants la scène 
 
 ### utils.ml
 
-Contient un opérateur d'addition de couples.
+Contient des fonctions utilitaires pour différents modules.
+
+### flags.ml
+
+Contient les deux paramètres pour l'exécution ainsi que leur récupération via Sys.argv
 
 ### ui.ml
 
 Ce fichier rassemble les fonctions d'affichage que ce soit de la scène principal ou des informations affichées au joueur (HUD).
 
-### main.ml
+### main.ml
 
 Point d'entrée du programme, initialise les différents éléments avant de lancer la boucle de jeu.
 
@@ -70,7 +88,7 @@ Une entité simple se déplaçant aléatoirement.
 
 Implémente la logique des araignée comme décrit dans le sujet ainsi que celle des oeufs créés par celles-ci.
 
-### elephant.ml
+### elephant.ml
 
 Implémente la logique de l'éléphant comme décrit dans le sujet.
 
@@ -88,8 +106,18 @@ Implémentation pour l'objectif "visibilité"
 
 ## Extensions principales
 
-### Objectif entités malines (Monkey)
+### Objectif entités malines (Monkey)
 
 ### Objectif système de jeu (keys and levels)
 
-### Objectif visibilité (light)
+Avec l'option d'exécution -d, on active le système de jeu.
+
+Dans chaque niveau, on retrouve une clé et différents ennemis. Le but est de rejoindre la clé sans se faire toucher par les ennemis.
+
+Le chameau meurt après 3 dégats mais regagne un point de vie par niveau complété (sans dépasser un maximum de 3)
+
+Les niveaux 0 à 10 sont implémentés, à partir du 11ème on répète en boucle le dernier.
+
+Lorsqu'on meurt, le prochain input ferme le jeu et on affiche le nombre de niveaux complétés.
+
+### Objectif visibilité (light)
