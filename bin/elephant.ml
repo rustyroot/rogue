@@ -7,7 +7,8 @@ open World
 
 type state_type = Stunned | Charging | Looking
 
-(** Pour un éléphant, on doit se souvenir de sa position (hérité depuis entity) de son état et durée (state et stunned (resp. charge)) *)
+(** [elephant], on doit se souvenir de sa position (hérité depuis [entity]) 
+    de son état et durée (state et stunned (resp. charge)) *)
 class elephant entity_instance =
   object
     inherit entity entity_instance
@@ -24,24 +25,20 @@ class elephant entity_instance =
     method set_charge new_charge = charge <- new_charge
 
     method get_charge_direction = charge_direction
-    method set_charge_direction new_charge_direction = charge_direction <- new_charge_direction
+    method set_charge_direction new_charge_direction = 
+      charge_direction <- new_charge_direction
   
     method get_state = state
     method set_state new_state = state <- new_state
   end
 
+(** [camel_on_sight_direction current_position direction] renvoit [true] 
+    si le chameau est visible dans la [direction], [false] sinon *)
 let rec camel_on_sight_direction (current_position : int * int) (direction : int * int) : bool =
-  match current_position with
-  | (x, y) ->
-    (
-      try (match world.(x).(y) with
-           | Empty -> camel_on_sight_direction (current_position ++ direction) direction
-           | Camel -> true
-           | _ -> false
-          )
-      with
-      | _ -> false
-    )
+  match get current_position with
+  | Empty -> camel_on_sight_direction (current_position ++ direction) direction
+  | Camel -> true
+  | _ -> false
 
 (** [camel_on_sight] regarde dans les 4 directions depuis [current_position]
 si le chameau y est en vue. Si c'est le cas, on renvoie la direction du chameau sinon (0,0) *)
@@ -51,18 +48,6 @@ let camel_on_sight (current_position : int * int) : (int * int) =
   else if camel_on_sight_direction (current_position ++ (0, + 1)) (0, + 1) then (0, + 1)
   else if camel_on_sight_direction (current_position ++ (0, - 1)) (0, - 1) then (0, - 1)
   else (0, 0)
-
-
-(** [random_direction ()] Renvoie une direction aléatoire dans le cas où
-l'éléphant se déplace sans objectif *)
-let random_direction () : int * int =
-  let random_move = (Random.int 4) in
-  match random_move with
-  | 0 -> (- 1, 0) (*Left*)
-  | 1 -> (+ 1, 0) (*Right*)
-  | 2 -> (0, + 1) (*Down*)
-  | 3 -> (0, - 1) (*Up*)
-  | _ -> (0, 0) (*Exhaustive pattern*)
 
 (** [elephant elephant_instance] calcule le nouvel état de l'éléphant en fonction du précédent
 - Si l'éléphant était en [Looking] du chameau et qu'il l'a trouvé, il passe en [Charging]

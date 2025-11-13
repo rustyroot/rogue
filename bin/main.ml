@@ -22,9 +22,12 @@ let () = Random.self_init ()
 let random_position () : int * int = (Random.int width, Random.int height)
 
 (* Place les cactus et le chameau initialement.*)
+let cactus_density = 0.10
+let nb_cells = width * height
+let nb_cactus = int_of_float (cactus_density *. (float_of_int nb_cells))
 
 let () =
-  for _ = 0 to 200 do set (random_position ()) Cactus   done 
+  for _ = 0 to nb_cactus do set (random_position ()) Cactus   done 
 
 let camel_initial_position = random_position ()
 let () = set camel_initial_position Camel

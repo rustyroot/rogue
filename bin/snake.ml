@@ -11,5 +11,6 @@ let rec snake (snake_instance : entity) : unit =
   let new_position = current_position ++ random_direction () in
   let new_position = move current_position new_position in
   snake_instance#set_pos new_position;
+  
   perform End_of_turn;
   snake snake_instance
