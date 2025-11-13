@@ -1,0 +1,86 @@
+open World
+
+(** [affine_function dst src] renvoit l'unique fonction affine passant par [src] et [dst].*)
+let affine_function (src : int * int) (dst : int * int) : float -> float =
+  let x, y = src in
+  let x', y' = dst in
+  let xf = float_of_int x in
+  let yf = float_of_int y in
+  let x'f = float_of_int x' in
+  let y'f = float_of_int y' in        
+  let a = (y'f -. yf) /. (x'f -. xf) in
+  let b = 0.5 *. ((yf +. y'f) -. (a *. (xf +. x'f))) in
+  fun z -> a *. z +. b
+
+(** [descrete_ray_cast src dst] renvoit la liste des cases du plateau intersectées par le segment allant src à dst.
+    À noté que la liste renvoyée est dans l'ordre (dans le sens de parcours du segment de src à dst)*)
+let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list =
+  if src = dst then [src] else
+  let x, y = src in
+  let x', y' = dst in
+  if x' < x then (* On réduit les cas étudiés en s'intéressant uniquement au droite orientée allant de gauche à droite*)
+    List.rev (descrete_ray_cast dst src)
+  else
+    if x = x' then (* On gère à part les droites verticales*)
+      if y' > y then (* droite verticale montante *)
+        List.init (y' - y + 1) (fun k -> (x, y + k))
+      else (* y' <= y *) (* droite verticale descendante *)
+        List.init (y - y' + 1) (fun k -> (x, y - k))
+    else
+      begin
+        let f = affine_function src dst in
+        let f_right_border = fun x ->  int_of_float (ceil ((f ((float_of_int x) +. 0.5)) -. 0.5)) in
+        let rec construct_list (x : int) (left_y : int) (acc : (int * int) list) : (int * int) list =
+          if x > x' then
+            acc
+          else
+            let right_y = f_right_border x in
+            let x_cell_list =
+              if right_y > left_y then (* droite montante *)
+                List.init (right_y - left_y +1) (fun k -> (x, left_y + k))
+              else if right_y < left_y then (* droite descendante *)
+                List.init (left_y - right_y +1) (fun k -> (x, left_y - k))
+              else
+                [x, left_y]
+            in
+            construct_list (x+1) right_y (acc@x_cell_list)
+        in
+        let rec cut_out_of_range (cell_list : (int*int) list) (begin_pass : bool) : (int*int) list =
+          match cell_list with
+          | head::_ when head = (x', y') -> [head]
+          | head::tail when head = (x, y) -> head::(cut_out_of_range tail true)
+          | head::tail when begin_pass -> head::(cut_out_of_range tail begin_pass)
+          | _::tail -> cut_out_of_range tail begin_pass
+          | [] -> failwith "descrete_ray_cast failed"
+        in
+        cut_out_of_range (construct_list x (f_right_border (x-1)) []) false
+      end
+
+(** [enlight path_of_light] copie les éléments de [world] dans [shadowed_world] si ceux-ci sont touchés par 
+    le rayon de lumière discret. *)
+  let rec enlight (path_of_light : (int * int) list) : unit =
+    match path_of_light with
+    | (i, j)::tail when get (i, j) = Empty || get (i, j) = Camel -> 
+      shadowed_world.(i).(j) <- world.(i).(j);
+      enlight tail
+    | (i, j)::_ -> shadowed_world.(i).(j) <- world.(i).(j)
+    | [] -> ()
+
+(** [enlighten_the_world camel_position] met à jour [shadowed_world] en tirant 
+    des rayons lumières discretes depuis le chameau vers l'ensemble des cases du plateau. *)
+let enlighten_the_world (camel_position : int * int) : unit =
+
+  (* Clear the buffer *)
+  for i = 0 to (width-1) do
+    for j = 0 to (height-1) do
+      shadowed_world.(i).(j) <- Fog
+    done; 
+  done;
+
+  (* enlight the world *)
+  for i = 0 to (width-1) do
+    for j = 0 to (height-1) do
+      let path_of_light = descrete_ray_cast camel_position (i, j) in
+      enlight path_of_light;
+    done; 
+  done

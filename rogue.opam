@@ -2,15 +2,17 @@
 opam-version: "2.0"
 synopsis: "A short synopsis"
 description: "A longer description"
-maintainer: ["Maintainer Name <maintainer@example.com>"]
+maintainer: [
+  "Adam Carrez adam.carrez@ens-rennes.fr, Eliott Houget eliott.houget@ens-rennes.fr, Etienne Lasherme etienne.lasherme@ens-rennes.fr"
+]
 authors: [
   "Adam Carrez adam.carrez@ens-rennes.fr, Eliott Houget eliott.houget@ens-rennes.fr, Etienne Lasherme etienne.lasherme@ens-rennes.fr"
 ]
 license: "LICENSE"
 tags: ["add topics" "to describe" "your" "project"]
-homepage: "https://github.com/username/reponame"
-doc: "https://url/to/documentation"
-bug-reports: "https://github.com/username/reponame/issues"
+homepage: "https://github.com/rustyroot/rogue"
+doc: "https://github.com/rustyroot/rogue/blob/main/README.md"
+bug-reports: "https://github.com/rustyroot/rogue/issues"
 depends: [
   "dune" {>= "3.19"}
   "ocaml"
@@ -30,5 +32,5 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/username/reponame.git"
+dev-repo: "git+https://github.com/rustyroot/rogue.git"
 x-maintenance-intent: ["(latest)"]

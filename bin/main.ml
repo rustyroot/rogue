@@ -1,6 +1,7 @@
 open World
 open Ui
 open Utils
+open Light
 
 open Player
 open Snake
@@ -12,21 +13,32 @@ open Monkey
 open Engine
 open Player
 
-(* Initialisation du monde *)
+(* Initialisation des niveaux *)
+let enemies = [snake, elephant, spider, monkey]
+let level_enemies = [
+  [3, 0, 1, 0], (* level 1 *)
+  [3, 0, 1, 0], (* level 2 *)
+  [3, 1, 2, 0], (* level 3 *)
+  [4, 1, 2, 0], (* level 4 *)
+  [4, 2, 2, 1], (* level 5 *)
+  [4, 2, 2, 1], (* level 6 *)
+  [4, 2, 3, 1], (* level 7 *)
+  [6, 3, 3, 1], (* level 8 *)
+  [6, 3, 3, 1], (* level 9 *)
+  [6, 3, 4, 2], (* level 10 *)
+  [6, 4, 4, 2]  (* level 11 *) (* niveau en boucle à l'infini *)
+]
 
 (* Initialisation du module Random*)
 let () = Random.self_init ()
 
-(** [random_position ()] renvoie une position aléatoire dans le monde*)
-let random_position () : int * int = (Random.int width, Random.int height)
+(* Initialisation du monde *)
+let () = fill_world ()
 
-(* Place les cactus et le chameau initialement.*)
-
-let () =
-  for _ = 0 to 200 do set (random_position ()) Cactus   done 
-
+(* Crée les différentes instances des entités *)
 let camel_initial_position = random_position ()
 let () = set camel_initial_position Camel
+let camel_instance = new entity camel_initial_position
 
 let snake_initial_position = random_position ()
 let () = set snake_initial_position Snake
@@ -45,14 +57,13 @@ let () = set monkey_initial_position Monkey
 let monkey_instance = new entity monkey_initial_position
 
 
+let () = enlighten_the_world camel_initial_position
 
 (* La file contient uniquement le tour du chameau *)
 
-let () = Queue.add (fun () -> player (fun () -> camel camel_initial_position)) queue
+let () = Queue.add (fun () -> player (fun () -> camel camel_instance)) queue
 
 let () = Queue.add (fun () -> player (fun () -> snake snake_instance)) queue
-
-let () = Queue.add (fun () -> player (fun () -> elephant elephant_instance)) queue
 
 let () = Queue.add (fun () -> player (fun () -> elephant elephant_instance)) queue
 
