@@ -1,5 +1,17 @@
 open World
 
+(** [affine_function dst src] renvoit l'unique fonction affine passant par [src] et [dst].*)
+let affine_function (src : int * int) (dst : int * int) : float -> float =
+  let x, y = src in
+  let x', y' = dst in
+  let xf = float_of_int x in
+  let yf = float_of_int y in
+  let x'f = float_of_int x' in
+  let y'f = float_of_int y' in        
+  let a = (y'f -. yf) /. (x'f -. xf) in
+  let b = 0.5 *. ((yf +. y'f) -. (a *. (xf +. x'f))) in
+  fun z -> a *. z +. b
+
 (** [descrete_ray_cast src dst] renvoit la liste des cases du plateau intersectées par le segment allant src à dst.
     À noté que la liste renvoyée est dans l'ordre (dans le sens de parcours du segment de src à dst)*)
 let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list =
@@ -16,13 +28,8 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
         List.init (y - y' + 1) (fun k -> (x, y - k))
     else
       begin
-        let xf = float_of_int x in
-        let yf = float_of_int y in
-        let x'f = float_of_int x' in
-        let y'f = float_of_int y' in        
-        let a = (y'f -. yf) /. (x'f -. xf) in
-        let b = 0.5 *. ((yf +. y'f) -. (a *. (xf +. x'f))) in
-        let f_right_border = fun x ->  int_of_float (ceil ((a *. ((float_of_int x) +. 0.5) +. b) -. 0.5)) in
+        let f = affine_function src dst in
+        let f_right_border = fun x ->  int_of_float (ceil ((f ((float_of_int x) +. 0.5)) -. 0.5)) in
         let rec construct_list (x : int) (left_y : int) (acc : (int * int) list) : (int * int) list =
           if x > x' then
             acc
