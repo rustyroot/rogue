@@ -83,11 +83,14 @@ let string_of_cell : cell -> string = function
 let draw_cell (c : cell) : image = I.string A.empty (string_of_cell c)
 
 let draw_world () : image =
-  I.(<->) (I.hcat (Array.to_list @@ Array.map draw_cell hud)) (I.hcat
-  @@ Array.to_list
-  @@ Array.map
-       (fun column -> I.vcat @@ Array.to_list @@ Array.map draw_cell column)
-       shadowed_world
+  I.(<->) 
+    (I.hcat (Array.to_list @@ Array.map draw_cell hud)) 
+    (I.hcat
+      @@ Array.to_list
+      @@ Array.map
+          (fun column -> I.vcat @@ Array.to_list @@ Array.map draw_cell column)
+          shadowed_world
+    )
 
 
 open Notty_unix
