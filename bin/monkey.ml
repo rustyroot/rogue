@@ -8,7 +8,7 @@ open Entity
 open World
 open File
 
-(** [get_cell_camel ()]
+(** [get_cell_camel]
     renvoie la position du chameau*)
 let get_pos_camel () : int*int = 
   let rec boucle (i : int) (j : int) : int*int = 
@@ -22,6 +22,8 @@ let get_pos_camel () : int*int =
   in
   boucle 0 0
 
+(** [abs]
+  renvoie la valeur absolu d'un int*)
 let abs (x : int) = if x>=0 then x else (-x)
 
 (** [distance]
@@ -31,7 +33,8 @@ let distance (pos1 : int*int) (pos2 : int*int) : int =
   let (l2,c2) = pos2 in
   (abs (l1 - l2) + abs (c1 - c2))
 
-
+(** [reconstruct_path]
+  reconstruit le chemine entre start et goal en remontant dans map depuis goal *)
 let reconstruct_path (map : (int*int) array array) (goal : int*int) (start : int*int) : (int*int) list =
   let rec aux p acc = 
     if p = start then acc 
@@ -39,6 +42,8 @@ let reconstruct_path (map : (int*int) array array) (goal : int*int) (start : int
   in
   aux goal []
 
+(** [get_neighbors]
+  renvoie les case voisine de position dans la grille qui sont vide ou occupé par le chameau *)
 let get_neighbors (position : int*int) : (int*int) list =
   let (l,c) = position in
   let is_empty_or_camel pos =
@@ -48,6 +53,8 @@ let get_neighbors (position : int*int) : (int*int) list =
   in
   List.filter is_empty_or_camel [(l+1,c);(l-1,c);(l,c+1);(l,c-1)]
 
+(** [pop_min]
+  renvoie la position ayant la valeur minimum dans liste et la liste des (position,valeur) restante *)
 let pop_min (liste : ((int*int)*int) list) : ((int*int)*(((int*int)*int) list)) = 
   let rec cherche l acc x_min v_min = match l with
     |[] -> (x_min,acc)
@@ -58,16 +65,20 @@ let pop_min (liste : ((int*int)*int) list) : ((int*int)*(((int*int)*int) list)) 
   |[] -> failwith "impossible de pop dans une liste vide" 
   |(x1,v1)::lst -> cherche lst [] x1 v1
 
-let appartient (liste : ((int*int)*int) list) (x : (int*int)) : bool =
+(** [appartient]
+  renvoie si pos est une position qui appartient a liste*)
+let appartient (liste : ((int*int)*int) list) (pos : (int*int)) : bool =
   let rec cherche l = match l with
     |[] -> false
-    |(y,_)::q -> if x=y then true else cherche q
+    |(p,_)::q -> if pos=p then true else cherche q
   in
   cherche liste
 
-exception No_path_found
 
-let a_star (start : int*int) (goal : int*int) (h : (int*int) -> (int*int) -> int) : (int*int) list =
+(** [a_star] renvoie le plus court chemin entre start et goal dans le desert
+    [upgrade] modifie (ou non) les valeurs de vrai et faux _score des voisins de la position que l'algorithme regarde et les rejoute (ou non) dans la liste des positions a traiter*)
+exception No_path_found
+  let a_star (start : int*int) (goal : int*int) (h : (int*int) -> (int*int) -> int) : (int*int) list =
   let map = Array.make_matrix width height (-1,-1) in
   let vrai_scores = Array.make_matrix width height max_int in 
   let faux_scores = Array.make_matrix width height max_int in
@@ -115,11 +126,13 @@ let a_star (start : int*int) (goal : int*int) (h : (int*int) -> (int*int) -> int
 
 
 
-
+(**[next] donne le prochain coup que le singe doit jouer*)
 let next (pos : int*int) : int*int= 
-  match a_star pos (get_pos_camel()) distance with
-    |[] -> failwith "pas possible"
-    |p::_ -> p
+  match (try a_star pos (get_pos_camel()) distance with
+    |No_path_found -> failwith "pas possible")
+  with
+  |[] -> failwith "impossible"
+  |p::_ -> p
 
 (** [snake current_pos] effectue tous les prochains tours du serpent à partir de la position 
     [current_pos] (choisir aléatoirement une entrée, se déplacer en conséquence, recommencer)*)
