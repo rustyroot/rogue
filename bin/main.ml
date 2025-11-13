@@ -18,8 +18,17 @@ open Monkey
 open Player
 
 (* Initialisation des niveaux *)
-let base_level = [|1; 1; 1; 1|]
 
+type enemy = | Entity of (entity -> unit) | Elephant of (elephant -> unit)
+
+(* Constantes *)
+let enemies = [|Entity snake; Elephant elephant; Entity spider; Entity monkey|]
+let enemies_cell = [|Snake; Elephant; Spider; Monkey|]
+
+(* Seul niveau utilisé quand on désactive le système de niveau *)
+let base_level = [|1; 1; 1; 1|] 
+
+(* Jeu complet avec 11 niveaux uniques (puis on répète sur le dernier) *)
 let levels_enemies = [|
   [|3; 0; 1; 0|]; (* level 0 *)
   [|3; 0; 1; 0|]; (* level 1 *)
@@ -34,15 +43,15 @@ let levels_enemies = [|
   [|6; 4; 4; 2|]  (* level 10 *) (* niveau en boucle à l'infini *)
 |]
 
-type enemy = | Entity of (entity -> unit) | Elephant of (elephant -> unit)
-let enemies = [|Entity snake; Elephant elephant; Entity spider; Entity monkey|]
-let enemies_cell = [|Snake; Elephant; Spider; Monkey|]
 
+(** [set_level ()] charge le niveau donné par [!level_number]*)
 let set_level () : unit =
   Queue.clear queue;
   world_clear ();
   fill_world ();
   
+  (* On choisit soit le [base_level] si le système de jeu est désactivé
+     soit le niveau associé à [!level_number] *)
   let level_enemies =
     (if level_activated then
       let number_of_level = Array.length levels_enemies in
@@ -53,6 +62,8 @@ let set_level () : unit =
     else
       base_level)
   in
+
+  (* Pour chaque type d'ennemies du niveau, on en génère autant que demandé par le niveau *)
   for i = 0 to (Array.length enemies -1) do
       for _ = 1 to (level_enemies.(i)) do
         match enemies.(i) with
@@ -68,6 +79,10 @@ let set_level () : unit =
           Queue.add (fun () -> player (fun () -> enemy entity_instance)) queue
         done
   done;
+
+  (* On génère la clé et le chameau 
+     si [is_curse_darkness_on] le chameau ne peut voir que près de lui
+     sinon il peut voir tout le [world] *)
   set (random_position ()) Key;
   let camel_initial_position = random_position () in
   set camel_initial_position Camel;
@@ -85,7 +100,9 @@ let () = Random.self_init ()
 let () = fill_world ()
 
 
-(* Début du jeu *)
+(** [play] lance le jeu
+    Si on arrive à la fin d'un niveau, on lance le suivant en redonnant une vie au joueur
+    Si on est mort, le jeu se termine lorsqu'il reçoit le prochain input*)
 let rec play () : unit =
   try run_queue ()
   with
@@ -96,11 +113,16 @@ let rec play () : unit =
     else () ;
     render();
     play ()
+
   | effect End_of_game camel_position, _ ->
     set camel_position Tomb;
     render();
+    Printf.printf "Final Level : %d\n" !level_number;
     match Term.event terminal with
     | _ -> exit 0
+
+
+(* Début du jeu *)
 
 let () = set_level ()
 let () = play ()

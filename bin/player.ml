@@ -28,7 +28,6 @@ let rec camel (camel_instance : entity) : unit =
   let new_position = current_position ++ keyboard_direction () in
   let new_position = move current_position new_position in
   camel_instance#set_pos new_position;
-  point := !point + 1;
   if is_curse_darkness_on then
     enlighten_the_world new_position
   else
