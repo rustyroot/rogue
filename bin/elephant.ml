@@ -65,36 +65,40 @@ let random_direction () : int * int =
   | _ -> (0, 0) (*Exhaustive pattern*)
 
 (** [elephant elephant_instance] calcule le nouvel état de l'éléphant en fonction du précédent
-Si l'éléphant était en [Looking] du chameau et qu'il l'a trouvé, il passe en [Charging]
-Sinon, il continue [Charging] ou [Stunned] jusqu'à la fin du compteur où il repasse en [Looking]
-Si il rencontre un obstacle pendant [Charging], il passe en [Stunned]*)
+- Si l'éléphant était en [Looking] du chameau et qu'il l'a trouvé, il passe en [Charging]
+- Si il était en [Charging] ou [Stunned], il y reste jusqu'à la fin du compteur puis il repasse en [Looking]
+- Si il rencontre un obstacle pendant [Charging], il passe en [Stunned]*)
 let rec elephant (elephant_instance : elephant) : unit =
   let current_position = elephant_instance#get_pos in
   let state_start = elephant_instance#get_state in
+
+  (* Calcul de la nouvelle position à partir de la position précédente et de l'état de l'éléphant*)
   let new_position =
     match state_start with
 
+    (* Si il cherche le chameau, il regarde si il le voit
+       Si c'est le cas, il le charge, sinon il se déplace aléatoirement *)
     | Looking -> 
       begin
         match (camel_on_sight current_position) with
         | (0, 0) -> current_position ++ random_direction ()
         | direction ->
-          (
-            elephant_instance#set_charge_direction direction;
-            elephant_instance#set_charge 9;
-            elephant_instance#set_state Charging;
-            current_position ++ direction
-          )
+          (elephant_instance#set_charge_direction direction;
+           elephant_instance#set_charge 9;
+           elephant_instance#set_state Charging;
+           current_position ++ direction)
       end
 
+    (* Si il chargeait, on diminue sa durée de 1 sauf si elle est finie et on update sa position*)
     | Charging -> 
       elephant_instance#set_charge (elephant_instance#get_charge -1);
-      if elephant_instance#get_charge = 0 then
-        begin
+      begin 
+        if elephant_instance#get_charge = 0 then
           elephant_instance#set_state Looking
-        end;
+      end;
       current_position ++ elephant_instance#get_charge_direction
     
+    (* Si il était stunned, on diminue la durée de 1 sauf si c'est 0 et il ne se déplace pas*)
     | Stunned -> 
       elephant_instance#set_stunned (elephant_instance#get_stunned -1);
       if elephant_instance#get_stunned = 0 then
@@ -106,16 +110,14 @@ let rec elephant (elephant_instance : elephant) : unit =
 
   let new_position = move current_position new_position in
   let is_blocked = (new_position = current_position) in
-  (* si true, c'est que l'éléphant n'a réussi à charger en avant, il a été bloqué et passe en [Stunned] *)
-  begin
-    match (is_blocked, elephant_instance#get_state) with
-    | (true, Charging) ->
-      begin
-        elephant_instance#set_state Stunned;
-        elephant_instance#set_stunned 20
-      end
-    | _ -> ()
-  end;
+  (* si true, c'est que l'éléphant n'a pas réussi à charger en avant, il a été bloqué et passe en [Stunned] *)
+  match (is_blocked, elephant_instance#get_state) with
+  | (true, Charging) ->
+    begin
+      elephant_instance#set_state Stunned;
+      elephant_instance#set_stunned 20
+    end
+  | _ -> ();
 
   elephant_instance#set_pos new_position;
   perform End_of_turn;
