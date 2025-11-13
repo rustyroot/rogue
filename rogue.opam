@@ -11,7 +11,7 @@ authors: [
 license: "LICENSE"
 tags: ["add topics" "to describe" "your" "project"]
 homepage: "https://github.com/rustyroot/rogue"
-doc: "https://url/to/documentation"
+doc: "https://github.com/rustyroot/rogue/blob/main/README.md"
 bug-reports: "https://github.com/rustyroot/rogue/issues"
 depends: [
   "dune" {>= "3.19"}
