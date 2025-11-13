@@ -39,51 +39,82 @@ let reconstruct_path (map : (int*int) array array) (goal : int*int) (start : int
   in
   aux goal []
 
-let get_neighbors (pos : int*int) : (int*int) list =
-  let lst = ref [] in
-  let (l,c) = pos in
-  if l+1 < width then match world.(l+1).(c) with |Empty -> lst := (l+1,c)::(!lst) |_ -> () else () ;
-  if l-1 >=0 then match world.(l-1).(c) with |Empty -> lst := (l-1,c)::(!lst) |_ -> () else () ;
-  if c+1 < height then match world.(l).(c+1) with |Empty -> lst := (l,c+1)::(!lst) |_ -> () else () ;
-  if c-1 <= 0 then match world.(l).(c-1) with |Empty -> lst := (l,c-1)::(!lst) |_ -> () else () ;
-  !lst
+let get_neighbors (position : int*int) : (int*int) list =
+  let (l,c) = position in
+  let is_empty_or_camel pos =
+    match get pos with
+      |Empty |Camel -> true
+      |_ -> false
+  in
+  List.filter is_empty_or_camel [(l+1,c);(l-1,c);(l,c+1);(l,c-1)]
 
-let a_star (start:int*int) (goal:int*int) (h:(int*int) -> (int*int) -> int) : (int*int) list =
-  let file = file_create () in
+let pop_min (liste : ((int*int)*int) list) : ((int*int)*(((int*int)*int) list)) = 
+  let rec cherche l acc x_min v_min = match l with
+    |[] -> (x_min,acc)
+    |(x,v)::q -> if v<v_min then cherche q ((x_min,v_min)::acc) x v
+      else cherche q ((x,v)::acc) x_min v_min
+  in
+  match liste with 
+  |[] -> failwith "impossible de pop dans une liste vide" 
+  |(x1,v1)::lst -> cherche lst [] x1 v1
+
+let appartient (liste : ((int*int)*int) list) (x : (int*int)) : bool =
+  let rec cherche l = match l with
+    |[] -> false
+    |(y,_)::q -> if x=y then true else cherche q
+  in
+  cherche liste
+
+exception No_path_found
+
+let a_star (start : int*int) (goal : int*int) (h : (int*int) -> (int*int) -> int) : (int*int) list =
   let map = Array.make_matrix width height (-1,-1) in
-  let vrai_scores = Array.make_matrix width height max_int in
+  let vrai_scores = Array.make_matrix width height max_int in 
   let faux_scores = Array.make_matrix width height max_int in
   let (ls,cs) = start in
   map.(ls).(cs) <- (ls,cs);
   vrai_scores.(ls).(cs) <- 0;
   faux_scores.(ls).(cs) <- h start goal;
-  let rec boucle () =
-      if file_is_empty file then failwith "No path" 
-      else begin
-        let current = file_pop file in
-        if current = goal then reconstruct_path map goal start else begin
-        let neighbors = get_neighbors current in
-        let rec update_neighbors neighbors =
-          match neighbors with
-          |[] -> ()
-          |(l,c)::tail -> (
-            let tentative_vrai_score = vrai_scores.(l).(c) + 1 in
-            if tentative_vrai_score < vrai_scores.(l).(c) then (
-              map.(l).(c) <- current;
-              vrai_scores.(l).(c) <- tentative_vrai_score;
-              faux_scores.(l).(c) <- tentative_vrai_score + (h (l,c) goal);
-              if not (file_mem file (l,c)) then
-                file_push file (l,c) faux_scores.(l).(c)
-            );
-            update_neighbors tail 
-          )
-        in
-        update_neighbors neighbors;
-        boucle ()
-      end
-    end
+  let rec upgrade lst_voisins lc cc file = 
+    match lst_voisins with
+    |[] -> file
+    |(l,c)::q -> let tentative_vrai_score = vrai_scores.(lc).(cc) + 1 in
+      if tentative_vrai_score < vrai_scores.(l).(c) then (
+        map.(l).(c) <- (lc,cc);
+        vrai_scores.(l).(c) <- tentative_vrai_score;
+        faux_scores.(l).(c) <- tentative_vrai_score + (h (l,c) goal);
+        if appartient file (l,c) then 
+          upgrade q lc cc file 
+        else 
+          upgrade q lc cc (((l,c),faux_scores.(l).(c))::file)
+        )
+      else upgrade q lc cc file
   in
-  boucle ()
+  let rec boucle file = 
+    if file = [] then 
+      raise No_path_found
+    else 
+      begin
+        let current,new_file = pop_min file in
+        let (x, y),(x', y') = current, goal in
+        if current = goal then 
+          reconstruct_path map goal start 
+        else 
+          begin
+            let (lc,cc) = current in
+            let lst_voisins = get_neighbors (lc,cc) in
+            boucle (upgrade lst_voisins lc cc new_file)
+          end
+      end
+  in
+  boucle [((ls,cs),0)]
+
+    
+
+
+
+
+
 
 
 let next (pos : int*int) : int*int= 

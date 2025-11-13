@@ -1,11 +1,14 @@
 let file_create () = ref []
 
+let comp a b = let (_,va) = a in let (_,vb) = b in 
+  if va > vb then 1 else (if va = vb then 0 else (-1))
+
 let file_push f x v = 
   let rec insere l = match l with
     |[] -> [(x,v)]
-    |(t,vt)::q -> if v < vt then (x,v)::l else (t,vt)::(insere q)
+    |(t,vt)::q -> if v<vt then (x,v)::(l) else (t,vt)::(insere q)
   in
-  f := insere (!f)
+f := insere (!f)
 
 let file_pop f = match (!f) with
   |[] -> failwith "file vide"
@@ -18,4 +21,4 @@ let file_mem f x =
   in
   aux (!f)
 
-let file_is_empty f = if (!f) = [] then true else false
+let file_is_empty f = match (!f) with |[] -> true |_ -> false
