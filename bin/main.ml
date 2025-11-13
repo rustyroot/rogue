@@ -18,7 +18,7 @@ open Player
 let () = Random.self_init ()
 
 (** [random_position ()] renvoie une position aléatoire dans le monde*)
-let random_position () : int * int = (Random.int width, (Random.int height) + 1)
+let random_position () : int * int = (Random.int width, Random.int height)
 
 (* Place les cactus et le chameau initialement.*)
 

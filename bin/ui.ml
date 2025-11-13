@@ -4,36 +4,39 @@ open World
 (* Affichage des points du joueur *)
 let point = ref 0
 
-let () = 
+let start_point_writting = 9
+
+let hud = Array.make width (HUD ' ')
+
+let clear_hud () = 
   begin
     for i = 0 to (width - 1) do 
-      set (i, 0) (HUD ' ')
+      hud.(i) <- (HUD ' ')
     done
   end
 
-let () = set (0, 0) (HUD 'P')
-let () = set (1, 0) (HUD 'o')
-let () = set (2, 0) (HUD 'i')
-let () = set (3, 0) (HUD 'n')
-let () = set (4, 0) (HUD 't')
-let () = set (5, 0) (HUD 's')
+let init_hud () =
+  clear_hud ();
+  hud.(0) <- (HUD 'P');
+  hud.(1) <- (HUD 'o');
+  hud.(2) <- (HUD 'i');
+  hud.(3) <- (HUD 'n');
+  hud.(4) <- (HUD 't');
+  hud.(5) <- (HUD 's');
 
-let () = set (7, 0) (HUD ':')
+  hud.(7) <- (HUD ':');
 
-let () = set (9, 0) (HUD '0')
+  hud.(9) <- (HUD '0')
 
-let start_point_writting = 9
+
+let () = init_hud ()
 
 let update_point (point : int) =
-  begin
-    for i = start_point_writting to (width - 1) do 
-      set (i, 0) (HUD ' ')
-    done
-  end;
+  init_hud();
   if point < 0 then
     exit 0
   else if point = 0 then
-    set (start_point_writting, 0) (HUD '0')
+    hud.(start_point_writting) <- (HUD '0')
   else
     begin
       let length = int_of_float (floor (log10 (float_of_int point) ) )  +1 in
@@ -42,7 +45,7 @@ let update_point (point : int) =
       while !point > 0 do
         let c = !point mod 10 in
         (
-        set (start_point_writting + !i, 0) (HUD (char_of_int(
+        hud.(start_point_writting + !i) <- (HUD (char_of_int(
                                                       (int_of_char ('0') + c)
                                                             )
                                                 )
@@ -80,11 +83,12 @@ let string_of_cell : cell -> string = function
 let draw_cell (c : cell) : image = I.string A.empty (string_of_cell c)
 
 let draw_world () : image =
-  I.hcat
+  I.(<->) (I.hcat (Array.to_list @@ Array.map draw_cell hud)) (I.hcat
   @@ Array.to_list
   @@ Array.map
-       (fun column -> I.vcat @@ Array.to_list @@ Array.map draw_cell column)
-       world
+  (fun column -> I.vcat @@ Array.to_list @@ Array.map draw_cell column)
+  world
+  )
 
 
 open Notty_unix
