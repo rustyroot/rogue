@@ -16,16 +16,21 @@ class entity (initial_position : int*int) =
 let move (old_position : int * int) (new_position : int * int) : int * int =
   match get new_position with
   | Empty ->
-      let character = get old_position in
-      set old_position Empty ;
-      set new_position character ;
-      new_position
+    let character = get old_position in
+    set old_position Empty ;
+    set new_position character ;
+    new_position
   | Camel ->
     if get old_position != Camel then (* Le chameau ne se retire pas de point quand il se recontre lui même *)
       point := !point - 5
     else
       ();
     old_position
+  | Key ->
+    if get old_position != Camel then
+      failwith "TODO"
+    else
+      failwith "TODO"
   | _ -> old_position
 
 (** [random_direction ()]

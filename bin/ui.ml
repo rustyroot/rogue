@@ -1,11 +1,11 @@
 open Notty
 open World
+open Utils
 
-(* Affichage des points du joueur *)
+(* HUD *)
+
 let point = ref 0
-
 let start_point_writting = 9
-
 let hud = Array.make width ' '
 
 (** [clear_hud ()] Remplace tout les caractères de l'HUD par ' ' *)
@@ -54,18 +54,12 @@ let update_point (point : int) =
       done
     end
 
-(** [concat_char] concatène [c] à la fin de [str] *)
-let concat_char (str : string) (c : char) : string =
-  str ^ (String.make 1 c)
-
-(** [string_of_array] transforme le tableau [tab] en un string *)
-let string_of_array (tab : char array) : string =
-  List.fold_left concat_char "" (Array.to_list tab) 
-
 (** Affichage du contenu d'une cellule.*)
 let string_of_cell : cell -> string = function
   | Empty      -> "  "
   | Cactus     -> "\u{1F335}"
+  | Fog        -> "\u{1F7E6}"
+  | Key        -> "\u{1F511}"
   | Camel      -> "\u{1F42A}"
   | Snake      -> "\u{1F40D}"
   | Elephant   -> "\u{1F418}"
