@@ -4,6 +4,7 @@ open Effect.Deep
 open Engine
 open Entity
 open World
+open Utils
 
 type state_type = Stunned | Charging | Looking
 
@@ -30,18 +31,13 @@ class elephant entity_instance =
     method set_state new_state = state <- new_state
   end
 
+(** [camel_on_sight_direction current_position direction] renvoit [true] 
+    si le chameau est visible dans la [direction], [false] sinon *)
 let rec camel_on_sight_direction (current_position : int * int) (direction : int * int) : bool =
-  match current_position with
-  | (x, y) ->
-    (
-      try (match world.(x).(y) with
-           | Empty -> camel_on_sight_direction (current_position ++ direction) direction
-           | Camel -> true
-           | _ -> false
-          )
-      with
-      | _ -> false
-    )
+  match get current_position with
+  | Empty -> camel_on_sight_direction (current_position ++ direction) direction
+  | Camel -> true
+  | _ -> false
 
 (** [camel_on_sight] regarde dans les 4 directions depuis [current_position]
 si le chameau y est en vue. Si c'est le cas, on renvoie la direction du chameau sinon (0,0) *)
@@ -51,18 +47,6 @@ let camel_on_sight (current_position : int * int) : (int * int) =
   else if camel_on_sight_direction (current_position ++ (0, + 1)) (0, + 1) then (0, + 1)
   else if camel_on_sight_direction (current_position ++ (0, - 1)) (0, - 1) then (0, - 1)
   else (0, 0)
-
-
-(** [random_direction ()] Renvoie une direction aléatoire dans le cas où
-l'éléphant se déplace sans objectif *)
-let random_direction () : int * int =
-  let random_move = (Random.int 4) in
-  match random_move with
-  | 0 -> (- 1, 0) (*Left*)
-  | 1 -> (+ 1, 0) (*Right*)
-  | 2 -> (0, + 1) (*Down*)
-  | 3 -> (0, - 1) (*Up*)
-  | _ -> (0, 0) (*Exhaustive pattern*)
 
 (** [elephant elephant_instance] calcule le nouvel état de l'éléphant en fonction du précédent
 - Si l'éléphant était en [Looking] du chameau et qu'il l'a trouvé, il passe en [Charging]
