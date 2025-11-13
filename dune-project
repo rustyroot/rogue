@@ -13,7 +13,7 @@
 
 (license LICENSE)
 
-(documentation https://url/to/documentation)
+(documentation https://github.com/rustyroot/rogue/blob/main/README.md)
 
 (package
  (name rogue)

@@ -68,7 +68,6 @@ let update_level () : unit =
 let string_of_cell : cell -> string = function
   | Empty      -> "  "
   | Cactus     -> "\u{1F335}"
-  | Fog        -> "\u{1F7E6}"
   | Key        -> "\u{1F511}"
   | Camel      -> "\u{1F42A}"
   | Snake      -> "\u{1F40D}"
@@ -76,6 +75,7 @@ let string_of_cell : cell -> string = function
   | Spider     -> "\u{1F577}"
   | Egg        -> "\u{1F95A}"
   | Monkey     -> "\u{1F412}"
+  | Fog        -> "░░"
 
 
 (** Fonctions de création de l'image correspondant à l'état actuel du monde.*)
