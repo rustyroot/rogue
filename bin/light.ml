@@ -1,5 +1,7 @@
 open World
 
+(** [descrete_ray_cast src dst] renvoit la liste des cases du plateau intersectées par le segment allant src à dst.
+    À noté que la liste renvoyée est dans l'ordre (dans le sens de parcours du segment de src à dst)*)
 let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list =
   if src = dst then [src] else
   let x, y = src in
@@ -47,23 +49,33 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
         cut_out_of_range (construct_list x (f_right_border (x-1)) []) false
       end
 
-let enlighten_the_world (camel_position : int * int) : unit =
-  for i = 0 to (width-1) do
-    for j = 0 to (height-1) do
-      shadowed_world.(i).(j) <- Empty
-    done; 
-  done;
+(** [enlight path_of_light] copie les éléments de [world] dans [shadowed_world] si ceux-ci sont touchés par 
+    le rayon de lumière discret. *)
   let rec enlight (path_of_light : (int * int) list) : unit =
     match path_of_light with
     | (i, j)::tail when get (i, j) = Empty || get (i, j) = Camel -> enlight tail
     | (i, j)::_ -> shadowed_world.(i).(j) <- world.(i).(j)
     | [] -> ()
-  in  
+
+(** [enlighten_the_world camel_position] met à jour [shadowed_world] en tirant 
+    des rayons lumières discretes depuis le chameau vers l'ensemble des cases du plateau. *)
+let enlighten_the_world (camel_position : int * int) : unit =
+
+  (* Clear the buffer *)
+  for i = 0 to (width-1) do
+    for j = 0 to (height-1) do
+      shadowed_world.(i).(j) <- Empty
+    done; 
+  done;
+
+  (* enlight the world *)
   for i = 0 to (width-1) do
     for j = 0 to (height-1) do
       let path_of_light = descrete_ray_cast camel_position (i, j) in
       enlight path_of_light;
     done; 
   done;
+
+  (* enlight the camel *)
   let x, y = camel_position in
   shadowed_world.(x).(y) <- world.(x).(y)
