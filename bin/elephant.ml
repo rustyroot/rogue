@@ -9,6 +9,7 @@ open World
 
 type state_type = Stunned | Charging | Looking
 
+(** Pour un éléphant, on doit se souvenir de sa position (hérité depuis entity) de son état et durée (state et stunned (resp. charge)) *)
 class elephant entity_instance =
   object
     inherit entity entity_instance
@@ -44,6 +45,8 @@ let rec camel_on_sight_direction (current_position : int * int) (direction : int
       | _ -> false
     )
 
+(** [camel_on_sight] regarde dans les 4 directions depuis [current_position]
+si le chameau y est en vue. Si c'est le cas, on renvoie la direction du chameau sinon (0,0) *)
 let camel_on_sight (current_position : int * int) : (int * int) =
   if camel_on_sight_direction (current_position ++ (- 1, 0)) (- 1, 0) then (- 1, 0)
   else if camel_on_sight_direction (current_position ++ (+ 1, 0)) (+ 1, 0) then (+ 1, 0)
@@ -52,8 +55,8 @@ let camel_on_sight (current_position : int * int) : (int * int) =
   else (0, 0)
 
 
-(** [elephant_direction ()]
-    TODO .*)
+(** [random_direction ()] Renvoie une direction aléatoire dans le cas où
+l'éléphant se déplace sans objectif *)
 let random_direction () : int * int =
   let random_move = (Random.int 4) in
   match random_move with
@@ -63,12 +66,16 @@ let random_direction () : int * int =
   | 3 -> (0, - 1) (*Up*)
   | _ -> (0, 0) (*Exhaustive pattern*)
 
-(** [elephant current_pos]  TODO *)
+(** [elephant elephant_instance] calcule le nouvel état de l'éléphant en fonction du précédent
+Si l'éléphant était en [Looking] du chameau et qu'il l'a trouvé, il passe en [Charging]
+Sinon, il continue [Charging] ou [Stunned] jusqu'à la fin du compteur où il repasse en [Looking]
+Si il rencontre un obstacle pendant [Charging], il passe en [Stunned]*)
 let rec elephant (elephant_instance : elephant) : unit =
   let current_position = elephant_instance#get_pos in
   let state_start = elephant_instance#get_state in
   let new_position =
     match state_start with
+
     | Looking -> 
       begin
         match (camel_on_sight current_position) with
@@ -101,6 +108,7 @@ let rec elephant (elephant_instance : elephant) : unit =
 
   let new_position = move current_position new_position in
   let is_blocked = (new_position = current_position) in
+  (* si true, c'est que l'éléphant n'a réussi à charger en avant, il a été bloqué et passe en [Stunned] *)
   begin
     match (is_blocked, elephant_instance#get_state) with
     | (true, Charging) ->
