@@ -38,7 +38,13 @@ let world_clear () : unit =
 let fill_world () : unit =
     let nb_cells = width * height in
     let nb_cactus = int_of_float (cactus_density *. (float_of_int nb_cells)) in
-    for _ = 0 to nb_cactus do set (random_position ()) Cactus   done;
+    for _ = 0 to nb_cactus do set (random_position ()) Cactus   done
 
-
-    
+(** [override_world] efface le monde actuel et le remplace avec [w]
+    A n'utiliser que dans test_rogue.ml pour override [world]*)
+let override_world (w : cell array array) : unit =
+  Array.iteri (fun i line ->
+    Array.iteri (fun j cell ->
+      set (i, j) cell
+    ) line
+  ) w
