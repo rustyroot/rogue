@@ -7,7 +7,8 @@ open World
 
 type state_type = Stunned | Charging | Looking
 
-(** Pour un éléphant, on doit se souvenir de sa position (hérité depuis entity) de son état et durée (state et stunned (resp. charge)) *)
+(** [elephant], on doit se souvenir de sa position (hérité depuis [entity]) 
+    de son état et durée (state et stunned (resp. charge)) *)
 class elephant entity_instance =
   object
     inherit entity entity_instance
@@ -24,7 +25,8 @@ class elephant entity_instance =
     method set_charge new_charge = charge <- new_charge
 
     method get_charge_direction = charge_direction
-    method set_charge_direction new_charge_direction = charge_direction <- new_charge_direction
+    method set_charge_direction new_charge_direction = 
+      charge_direction <- new_charge_direction
   
     method get_state = state
     method set_state new_state = state <- new_state

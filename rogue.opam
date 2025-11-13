@@ -2,7 +2,9 @@
 opam-version: "2.0"
 synopsis: "A short synopsis"
 description: "A longer description"
-maintainer: ["Maintainer Name <maintainer@example.com>"]
+maintainer: [
+  "Adam Carrez adam.carrez@ens-rennes.fr, Eliott Houget eliott.houget@ens-rennes.fr, Etienne Lasherme etienne.lasherme@ens-rennes.fr"
+]
 authors: [
   "Adam Carrez adam.carrez@ens-rennes.fr, Eliott Houget eliott.houget@ens-rennes.fr, Etienne Lasherme etienne.lasherme@ens-rennes.fr"
 ]

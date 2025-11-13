@@ -1,7 +1,6 @@
 (** Type du contenu d'une case du monde. *)
-type cell = Empty 
+type cell = Empty | Fog
           | Cactus | Camel | Snake | Elephant | Spider | Egg | Monkey 
-          | Fog
 
 let width, height = 50, 30
 
