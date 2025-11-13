@@ -8,6 +8,7 @@ let start_point_writting = 9
 
 let hud = Array.make width ' '
 
+(** [clear_hud ()] Remplace tout les caractères de l'HUD par ' ' *)
 let clear_hud () = 
   begin
     for i = 0 to (width - 1) do 
@@ -15,6 +16,7 @@ let clear_hud () =
     done
   end
 
+(** [init_hud ()] écrit "Point : 0" dans l'HUD *)
 let init_hud () =
   clear_hud ();
   hud.(0) <- 'P';
@@ -30,6 +32,7 @@ let init_hud () =
 
 let () = init_hud ()
 
+(** [update_point] update l'HUD avec le nouveaux nombre de [point] *)
 let update_point (point : int) =
   init_hud();
   if point < 0 then
@@ -51,10 +54,11 @@ let update_point (point : int) =
       done
     end
 
-
+(** [concat_char] concatène [c] à la fin de [str] *)
 let concat_char (str : string) (c : char) : string =
   str ^ (String.make 1 c)
 
+(** [string_of_array] transforme le tableau [tab] en un string *)
 let string_of_array (tab : char array) : string =
   List.fold_left concat_char "" (Array.to_list tab) 
 

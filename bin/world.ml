@@ -3,6 +3,7 @@ type cell = Empty | Fog
           | Cactus | Camel | Snake | Elephant | Spider | Egg | Monkey 
 
 let width, height = 50, 30
+let cactus_density = 0.10
 
 (** Le monde [world] est un tableau mutable. *)
 let world : cell array array = Array.make_matrix width height Empty
