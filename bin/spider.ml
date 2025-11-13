@@ -1,5 +1,3 @@
-open Notty_unix
-open Ui
 open Utils
 open Effect
 open Effect.Deep
@@ -22,8 +20,9 @@ class egg entity_instance =
 
   end
 
-(** [spider spider_instance] effectue tous les prochains tours de l'araigné à partir de la position 
-    [current_pos] (choisir aléatoirement une entrée, se déplacer en conséquence, recommencer)*)
+(** [spider spider_instance] effectue tous les prochains tours de l'araigné à partir des paramètres 
+    [spider_instance] (choisir aléatoirement une entrée, se déplacer en conséquence,
+    essayer de créer un oeuf, recommencer) *)
 let rec spider (spider_instance : entity) : unit =
 
   (* set new position *)
@@ -41,14 +40,17 @@ let rec spider (spider_instance : entity) : unit =
   perform End_of_turn;  
   spider spider_instance
 
-and spawn_spider (egg_position: int * int) =
-  let spider_position = get_random_nearby_cell egg_position in
-  let spider_instance = new entity spider_position in
-  set spider_position Spider;
-  Queue.add (fun () -> player (fun () -> spider spider_instance)) queue
+(** [spawn_egg spider_position] tente de créer un oeuf sur une case aléatoire 
+    autour de [spider_position], elle peut échouer en renvoyant [No_cell_avaible]*)
+and spawn_egg (spider_position : int * int) : unit =
+  let egg_position = get_random_nearby_cell spider_position in
+  let egg_instance = new egg egg_position in
+  set egg_position Egg;
+  Queue.add (fun () -> player (fun () -> egg egg_instance)) queue
 
+(** [egg egg_instance] effectue tous les prochains tours de l'oeuf à partir des paramètres 
+    [egg_instance] (attendre, créer un araignée, cela 3 fois avant de terminer)*)
 and egg (egg_instance : egg) : unit =
-
   let nb_turns_before_generation = egg_instance#get_nb_turns_before_generation in
   if nb_turns_before_generation > 0 then
     begin
@@ -71,12 +73,14 @@ and egg (egg_instance : egg) : unit =
     end
   else
     set egg_instance#get_pos Empty;
-  
-and spawn_egg (spider_position : int * int) : unit =
-  let egg_position = get_random_nearby_cell spider_position in
-  let egg_instance = new egg egg_position in
-  set egg_position Egg;
-  Queue.add (fun () -> player (fun () -> egg egg_instance)) queue
+
+(** [spawn_spider egg_position] tente de créer une araigné sur une case aléatoire 
+    autour de [egg_position], elle peut échouer en renvoyant [No_cell_avaible]*)
+and spawn_spider (egg_position: int * int) =
+  let spider_position = get_random_nearby_cell egg_position in
+  let spider_instance = new entity spider_position in
+  set spider_position Spider;
+  Queue.add (fun () -> player (fun () -> spider spider_instance)) queue
 
 
 
