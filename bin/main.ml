@@ -1,7 +1,10 @@
+open Roguelib
+
 open World
 open Ui
 open Utils
 open Light
+open Engine
 
 open Player
 open Snake
@@ -10,8 +13,7 @@ open Spider
 open Entity
 open Monkey
 
-open Engine
-open Player
+open Flag
 
 (* Initialisation des niveaux *)
 let enemies = [snake, elephant, spider, monkey]
@@ -56,8 +58,11 @@ let monkey_initial_position = random_position ()
 let () = set monkey_initial_position Monkey
 let monkey_instance = new entity monkey_initial_position
 
-
-let () = enlighten_the_world camel_initial_position
+let () = 
+  if is_curse_darkness_on then
+    enlighten_the_world camel_initial_position
+  else
+    ()
 
 (* La file contient uniquement le tour du chameau *)
 

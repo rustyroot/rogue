@@ -1,7 +1,13 @@
+(library
+  (name roguelib)
+  (modules elephant engine entity file flag light monkey player snake spider ui utils world)
+  (libraries notty.unix))
+
 (executable
  (public_name rogue)
  (name main)
- (libraries notty.unix))
+ (modules main)
+ (libraries notty.unix roguelib))
 
 (env
   (dev
