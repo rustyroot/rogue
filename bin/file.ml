@@ -26,10 +26,6 @@ let file_mem f (x : 'a) : bool =
   in
   aux (!f)
 
-<<<<<<< HEAD
-let file_is_empty f = match (!f) with |[] -> true |_ -> false
-=======
 (** [file_is_empty] renvoie true si la file est vide *)
 let file_is_empty (f : ('a * int) list ref) : bool = (!f) = []
 
->>>>>>> 5cc332838889d511a1945d12464eacf9680fc556

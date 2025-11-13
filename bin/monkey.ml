@@ -96,7 +96,6 @@ let a_star (start : int*int) (goal : int*int) (h : (int*int) -> (int*int) -> int
     else 
       begin
         let current,new_file = pop_min file in
-        let (x, y),(x', y') = current, goal in
         if current = goal then 
           reconstruct_path map goal start 
         else 
