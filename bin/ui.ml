@@ -5,51 +5,61 @@ open Utils
 (* HUD *)
 
 let point = ref 0
-let start_point_writting = 9
-let hud = Array.make width ' '
+let broken_heart = "\u{1F494}"
+let heart = "\u{2764}"
+let start_live_writting = 0
+let start_level_writting = start_live_writting + 13
+let hud = Array.make width " "
 
-(** [clear_hud ()] Remplace tout les caractères de l'HUD par ' ' *)
+(** [clear_hud ()] Remplace tout les caractères de l'HUD par " " *)
 let clear_hud () = 
   begin
     for i = 0 to (width - 1) do 
-      hud.(i) <- ' '
+      hud.(i) <- " "
     done
   end
 
 (** [init_hud ()] écrit "Point : 0" dans l'HUD *)
 let init_hud () =
   clear_hud ();
-  hud.(0) <- 'P';
-  hud.(1) <- 'o';
-  hud.(2) <- 'i';
-  hud.(3) <- 'n';
-  hud.(4) <- 't';
-  hud.(5) <- 's';
+  hud.(start_live_writting) <- "L";
+  hud.(start_live_writting + 1) <- "i";
+  hud.(start_live_writting + 2) <- "v";
+  hud.(start_live_writting + 3) <- "e";
+  hud.(start_live_writting + 4) <- "s";
 
-  hud.(7) <- ':';
+  hud.(start_live_writting + 6) <- ":";
 
-  hud.(9) <- '0'
+  hud.(start_live_writting + 8) <- heart;
+  hud.(start_live_writting + 9) <- heart;
+  hud.(start_live_writting + 10) <- heart;
+
+  hud.(start_level_writting) <- "L";
+  hud.(start_level_writting + 1) <- "e";
+  hud.(start_level_writting + 2) <- "v";
+  hud.(start_level_writting + 3) <- "e";
+  hud.(start_level_writting + 4) <- "l";
+
+  hud.(start_level_writting + 6) <- ":"
+
 
 let () = init_hud ()
 
 (** [update_point] update l'HUD avec le nouveaux nombre de [point] *)
-let update_point (point : int) =
-  init_hud();
-  if point < 0 then
-    exit 0
-  else if point = 0 then
-    hud.(start_point_writting) <- '0'
+let update_level () : unit =
+  if !level_number = 0 then
+    hud.(start_level_writting + 8) <- "0"
   else
     begin
-      let length = int_of_float (floor (log10 (float_of_int point) ) )  +1 in
+      let length = int_of_float (floor (log10 (float_of_int !level_number) ) )  +1 in
       let i = ref (length - 1) in
-      let point = ref point in
-      while !point > 0 do
-        let c = !point mod 10 in
+      let level_number_temp = ref (!level_number) in
+      while !level_number_temp > 0 do
+        let c = !level_number_temp mod 10 in
         (
-        hud.(start_point_writting + !i) <- (char_of_int( (int_of_char ('0') + c) ) );
+        hud.(start_level_writting + 8 + !i) <- String.make 1 (char_of_int( (int_of_char ('0') + c) ) );
         i := !i - 1;
-        point := !point/10
+        level_number_temp := !level_number_temp/10
         );
       done
     end

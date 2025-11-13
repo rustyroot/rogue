@@ -1,6 +1,13 @@
 open World
 open Ui
 
+open Effect
+open Effect.Deep
+
+(** L'effet [End_of_level] indique que le chameau a trouvé la clé
+    et qu'il faut changer de level*)
+type _ Effect.t += End_of_level: unit t
+
 class entity (initial_position : int*int) =
   object
     val mutable position = initial_position
@@ -22,15 +29,17 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
     new_position
   | Camel ->
     if get old_position != Camel then (* Le chameau ne se retire pas de point quand il se recontre lui même *)
-      point := !point - 5
+      lives := !lives - 1
     else
       ();
     old_position
   | Key ->
-    if get old_position != Camel then
-      failwith "TODO"
+    if get old_position = Camel then
+      (level_number := !level_number + 1;
+      perform End_of_level)
     else
-      failwith "TODO"
+      ();
+    old_position
   | _ -> old_position
 
 (** [random_direction ()]
