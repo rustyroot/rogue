@@ -4,7 +4,6 @@ open Effect.Deep
 open Engine
 open Entity
 open World
-open Utils
 
 type state_type = Stunned | Charging | Looking
 
