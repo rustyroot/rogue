@@ -1,5 +1,6 @@
 open World
 open Ui
+open Flag
 
 open Effect
 open Effect.Deep
@@ -34,7 +35,7 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
       ();
     old_position
   | Key ->
-    if get old_position = Camel then
+    if get old_position = Camel && level_activated then
       (level_number := !level_number + 1;
       perform End_of_level)
     else
