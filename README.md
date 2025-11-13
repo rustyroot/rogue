@@ -18,7 +18,7 @@
 make build
 ```
 
-## Guide d'utilisation du jeu
+## Exemples d'usages
 
 ```sh
 ./rogue
