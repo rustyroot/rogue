@@ -8,6 +8,7 @@ open Effect.Deep
 (** L'effet [End_of_level] indique que le chameau a trouvé la clé
     et qu'il faut changer de level*)
 type _ Effect.t += End_of_level: unit t
+type _ Effect.t += End_of_game: (int*int)->unit t
 
 class entity (initial_position : int*int) =
   object
@@ -30,7 +31,8 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
     new_position
   | Camel ->
     if get old_position != Camel then (* Le chameau ne se retire pas de point quand il se recontre lui même *)
-      lives := !lives - 1
+      (lives := !lives - 1;
+      if !lives = 0 then perform (End_of_game new_position))
     else
       ();
     old_position

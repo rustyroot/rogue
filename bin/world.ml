@@ -1,7 +1,7 @@
 open Utils
 
 (** Type du contenu d'une case du monde. *)
-type cell = Empty | Fog | Cactus | Key |
+type cell = Empty | Fog | Cactus | Key | Tomb |
             Camel | Snake | Elephant | Spider | Egg | Monkey
 
 
@@ -9,7 +9,7 @@ type cell = Empty | Fog | Cactus | Key |
 let width, height = 50, 30
 let cactus_density = 0.10
 let level_number = ref 0
-let lives = ref 0
+let lives = ref 3
 
 (** Le monde [world] est un tableau mutable. *)
 let world : cell array array = Array.make_matrix width height Empty
@@ -39,7 +39,6 @@ let fill_world () : unit =
     let nb_cells = width * height in
     let nb_cactus = int_of_float (cactus_density *. (float_of_int nb_cells)) in
     for _ = 0 to nb_cactus do set (random_position ()) Cactus   done;
-    set (random_position ()) Key
 
 
     

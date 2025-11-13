@@ -47,7 +47,7 @@ let init_hud () =
 let () = init_hud ()
 
 (** [update_point] update l'HUD avec le nouveaux nombre de [point] *)
-let update_level () : unit =
+let update_level_hud () : unit =
   if !level_number = 0 then
     hud.(start_level_writting + 8) <- "0"
   else
@@ -65,6 +65,22 @@ let update_level () : unit =
       done
     end
 
+let update_lives_hud () : unit =
+  match !lives with
+  | 1 ->
+    hud.(start_live_writting + 8) <- heart;
+    hud.(start_live_writting + 9) <- broken_heart;
+    hud.(start_live_writting + 10) <- broken_heart
+  | 2 ->
+    hud.(start_live_writting + 8) <- heart;
+    hud.(start_live_writting + 9) <- heart;
+    hud.(start_live_writting + 10) <- broken_heart
+  | 3 ->
+    hud.(start_live_writting + 8) <- heart;
+    hud.(start_live_writting + 9) <- heart;
+    hud.(start_live_writting + 10) <- heart
+  | _ -> failwith "lives > 3 or lives < 0"
+
 (** Affichage du contenu d'une cellule.*)
 let string_of_cell : cell -> string = function
   | Empty      -> "  "
@@ -77,6 +93,7 @@ let string_of_cell : cell -> string = function
   | Egg        -> "\u{1F95A}"
   | Monkey     -> "\u{1F412}"
   | Fog        -> "░░"
+  | Tomb       -> "\u{1FAA6}"
 
 
 (** Fonctions de création de l'image correspondant à l'état actuel du monde.*)
@@ -99,5 +116,8 @@ open Notty_unix
 let terminal : Term.t = Term.create ()
 
 (** [render ()] met à jour l'affichage courant dans le terminal*)
-let render () : unit = Term.image terminal (draw_world ())
+let render () : unit =
+  Term.image terminal (draw_world ());
+  update_level_hud () ;
+  update_lives_hud () 
 let () = render ()

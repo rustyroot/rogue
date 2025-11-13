@@ -27,7 +27,6 @@ let player (character : unit -> unit) : unit =
 let run_queue () : 'a =
   while true do
     render () ;
-    update_level () ;
     let suspended_character = Queue.pop queue in
     suspended_character () ;
   done
