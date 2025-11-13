@@ -22,18 +22,6 @@ class egg entity_instance =
 
   end
 
-(** [random_direction ()]
-    Choisie alléatoirement une direction et renvoie le changement à appliquer sur les coordonnées
-    du serpent pour aller dans la direction correspondante.*)
-let random_direction () : int * int =
-  let random_move = (Random.int 4) in
-  match random_move with
-  | 0 -> (- 1, 0) (*Left*)
-  | 1 -> (+ 1, 0) (*Right*)
-  | 2 -> (0, + 1) (*Down*)
-  | 3 -> (0, - 1) (*Up*)
-  | _ -> (0, 0) (*Exhaustive pattern*)
-
 (** [spider spider_instance] effectue tous les prochains tours de l'araigné à partir de la position 
     [current_pos] (choisir aléatoirement une entrée, se déplacer en conséquence, recommencer)*)
 let rec spider (spider_instance : entity) : unit =

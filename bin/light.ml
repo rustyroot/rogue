@@ -53,7 +53,9 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
     le rayon de lumière discret. *)
   let rec enlight (path_of_light : (int * int) list) : unit =
     match path_of_light with
-    | (i, j)::tail when get (i, j) = Empty || get (i, j) = Camel -> enlight tail
+    | (i, j)::tail when get (i, j) = Empty || get (i, j) = Camel -> 
+      shadowed_world.(i).(j) <- world.(i).(j);
+      enlight tail
     | (i, j)::_ -> shadowed_world.(i).(j) <- world.(i).(j)
     | [] -> ()
 
@@ -64,7 +66,7 @@ let enlighten_the_world (camel_position : int * int) : unit =
   (* Clear the buffer *)
   for i = 0 to (width-1) do
     for j = 0 to (height-1) do
-      shadowed_world.(i).(j) <- Empty
+      shadowed_world.(i).(j) <- Fog
     done; 
   done;
 
@@ -74,8 +76,4 @@ let enlighten_the_world (camel_position : int * int) : unit =
       let path_of_light = descrete_ray_cast camel_position (i, j) in
       enlight path_of_light;
     done; 
-  done;
-
-  (* enlight the camel *)
-  let x, y = camel_position in
-  shadowed_world.(x).(y) <- world.(x).(y)
+  done

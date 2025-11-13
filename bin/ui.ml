@@ -67,17 +67,9 @@ let string_of_cell : cell -> string = function
   | Spider     -> "\u{1F577}"
   | Egg        -> "\u{1F95A}"
   | Monkey     -> "\u{1F412}"
+  | Fog        -> "\u{1F7E6}"
   | HUD (c)    -> String.make 1 c
-
-
-(* Codes des emojis pour les animaux pertinents
-   serpent : "\u{1F40D}"
-   éléphant : "\u{1F418}"
-   araignée : "\u{1F577} "
-   oeuf : "\u{1F95A}"
-   monkey "\u{1F412}"
-   Des sites comme l'emojipedia peuvent vous donner plus de codes.
-*)
+  
 
 (** Fonctions de création de l'image correspondant à l'état actuel du monde.*)
 let draw_cell (c : cell) : image = I.string A.empty (string_of_cell c)
