@@ -4,12 +4,16 @@ open Utils
 open Flag
 
 (* HUD *)
-
-let point = ref 0
+(* Constantes : *)
+let lives_str = "lives : "
+let level_str = "level : "
 let broken_heart = "\u{1F494}"
 let heart = "\u{2764}"
-let start_live_writting = 0
-let start_level_writting = start_live_writting + 13
+let start_lives_writting = 0
+let start_heart_writting = start_lives_writting + String.length lives_str
+let start_level_writting = start_heart_writting + 4
+let start_level_number_writting = start_level_writting + String.length level_str
+
 let hud = Array.make width " "
 
 (** [clear_hud ()] Remplace tout les caractères de l'HUD par " " *)
@@ -20,66 +24,51 @@ let clear_hud () =
     done
   end
 
-(** [init_hud ()] écrit "Point : 0" dans l'HUD *)
+(** [string_to_hud] écrit [str] dans l'HUD à partir de [starting_pos] *)
+let string_to_hud (starting_pos : int) (str : string) : unit =
+  String.iteri (fun i x -> (hud.(starting_pos + i) <- String.make 1 x)) str
+
+(** [update_level_hud] update l'HUD avec le [level] actuel *)
+let update_level_hud () : unit =
+  string_to_hud start_level_number_writting (string_of_int !level_number)
+
+(** [update_lives_hud] update l'HUD avec le bon nombre vies pleines et vides *)
+let update_lives_hud () : unit =
+  match !lives with
+  | 0 -> 
+    hud.(start_lives_writting + 8) <- broken_heart;
+    hud.(start_lives_writting + 9) <- broken_heart;
+    hud.(start_lives_writting + 10) <- broken_heart
+  | 1 ->
+    hud.(start_lives_writting + 8) <- heart;
+    hud.(start_lives_writting + 9) <- broken_heart;
+    hud.(start_lives_writting + 10) <- broken_heart
+  | 2 ->
+    hud.(start_lives_writting + 8) <- heart;
+    hud.(start_lives_writting + 9) <- heart;
+    hud.(start_lives_writting + 10) <- broken_heart
+  | 3 ->
+    hud.(start_lives_writting + 8) <- heart;
+    hud.(start_lives_writting + 9) <- heart;
+    hud.(start_lives_writting + 10) <- heart
+  | _ -> failwith "lives > 3 or lives < 0"
+
+(** [init_hud ()] écrit "lives : ❤❤❤ level : 0" dans l'HUD *)
 let init_hud () =
   clear_hud ();
-  hud.(start_live_writting) <- "L";
-  hud.(start_live_writting + 1) <- "i";
-  hud.(start_live_writting + 2) <- "v";
-  hud.(start_live_writting + 3) <- "e";
-  hud.(start_live_writting + 4) <- "s";
+  
+  string_to_hud start_lives_writting lives_str;
+  hud.(start_heart_writting) <- heart;
+  hud.(start_heart_writting + 1) <- heart;
+  hud.(start_heart_writting + 2) <- heart;
 
-  hud.(start_live_writting + 6) <- ":";
+  string_to_hud start_level_writting level_str;
+  update_level_hud ()
 
-  hud.(start_live_writting + 8) <- heart;
-  hud.(start_live_writting + 9) <- heart;
-  hud.(start_live_writting + 10) <- heart;
-
-  hud.(start_level_writting) <- "L";
-  hud.(start_level_writting + 1) <- "e";
-  hud.(start_level_writting + 2) <- "v";
-  hud.(start_level_writting + 3) <- "e";
-  hud.(start_level_writting + 4) <- "l";
-
-  hud.(start_level_writting + 6) <- ":"
 
 
 let () = init_hud ()
 
-(** [update_point] update l'HUD avec le nouveaux nombre de [point] *)
-let update_level_hud () : unit =
-  if !level_number = 0 then
-    hud.(start_level_writting + 8) <- "0"
-  else
-    begin
-      let length = int_of_float (floor (log10 (float_of_int !level_number) ) )  +1 in
-      let i = ref (length - 1) in
-      let level_number_temp = ref (!level_number) in
-      while !level_number_temp > 0 do
-        let c = !level_number_temp mod 10 in
-        (
-        hud.(start_level_writting + 8 + !i) <- String.make 1 (char_of_int( (int_of_char ('0') + c) ) );
-        i := !i - 1;
-        level_number_temp := !level_number_temp/10
-        );
-      done
-    end
-
-let update_lives_hud () : unit =
-  match !lives with
-  | 1 ->
-    hud.(start_live_writting + 8) <- heart;
-    hud.(start_live_writting + 9) <- broken_heart;
-    hud.(start_live_writting + 10) <- broken_heart
-  | 2 ->
-    hud.(start_live_writting + 8) <- heart;
-    hud.(start_live_writting + 9) <- heart;
-    hud.(start_live_writting + 10) <- broken_heart
-  | 3 ->
-    hud.(start_live_writting + 8) <- heart;
-    hud.(start_live_writting + 9) <- heart;
-    hud.(start_live_writting + 10) <- heart
-  | _ -> failwith "lives > 3 or lives < 0"
 
 (** Affichage du contenu d'une cellule.*)
 let string_of_cell : cell -> string = function
@@ -115,9 +104,9 @@ open Notty_unix
 (** [terminal] est une constante qui correspond au terminal où le jeu est joué*)
 let terminal : Term.t = Term.create ()
 
-(** [render ()] met à jour l'affichage courant dans le terminal*)
+(** [render ()] met à jour l'HUD puis l'affichage courant dans le terminal*)
 let render () : unit =
-  Term.image terminal (draw_world ());
   update_level_hud () ;
-  update_lives_hud () 
+  update_lives_hud () ;
+  Term.image terminal (draw_world ())
 let () = render ()
