@@ -58,7 +58,6 @@ let update_point (point : int) =
 let string_of_cell : cell -> string = function
   | Empty      -> "  "
   | Cactus     -> "\u{1F335}"
-  | Fog        -> "\u{1F7E6}"
   | Key        -> "\u{1F511}"
   | Camel      -> "\u{1F42A}"
   | Snake      -> "\u{1F40D}"
