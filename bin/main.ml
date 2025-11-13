@@ -13,22 +13,29 @@ open Monkey
 open Engine
 open Player
 
-(* Initialisation du monde *)
+(* Initialisation des niveaux *)
+let enemies = [snake, elephant, spider, monkey]
+let level_enemies = [
+  [3, 0, 1, 0], (* level 1 *)
+  [3, 0, 1, 0], (* level 2 *)
+  [3, 1, 2, 0], (* level 3 *)
+  [4, 1, 2, 0], (* level 4 *)
+  [4, 2, 2, 1], (* level 5 *)
+  [4, 2, 2, 1], (* level 6 *)
+  [4, 2, 3, 1], (* level 7 *)
+  [6, 3, 3, 1], (* level 8 *)
+  [6, 3, 3, 1], (* level 9 *)
+  [6, 3, 4, 2], (* level 10 *)
+  [6, 4, 4, 2]  (* level 11 *) (* niveau en boucle à l'infini *)
+]
 
 (* Initialisation du module Random*)
 let () = Random.self_init ()
 
-(** [random_position ()] renvoie une position aléatoire dans le monde*)
-let random_position () : int * int = (Random.int width, Random.int height)
+(* Initialisation du monde *)
+let () = fill_world ()
 
-(* Place les cactus et le chameau initialement.*)
-let cactus_density = 0.10
-let nb_cells = width * height
-let nb_cactus = int_of_float (cactus_density *. (float_of_int nb_cells))
-
-let () =
-  for _ = 0 to nb_cactus do set (random_position ()) Cactus   done 
-
+(* Crée les différentes instances des entités *)
 let camel_initial_position = random_position ()
 let () = set camel_initial_position Camel
 let camel_instance = new entity camel_initial_position
