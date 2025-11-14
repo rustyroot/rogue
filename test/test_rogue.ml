@@ -4,7 +4,7 @@ open Entity
 open Light
 open Monkey
 
-let () = override_world [|
+let _ = override_world [|
   [|Key   ;Camel ;Empty ;Empty ;Empty|];
   [|Snake ;Empty ;Empty ;Empty ;Empty|];
   [|Empty ;Empty ;Empty ;Empty ;Empty|];
@@ -20,7 +20,7 @@ let _ = assert (world.(3).(1) = Spider)
 let _ = Printf.printf "spider_move :                      OK \n"
 
 (* L'araignée attaque le chameau du bas *)
-let () = lives := 12
+let _ = lives := 12
 let _ = assert (move (3, 1) (3, 0) = (3, 1))
 let _ = assert (world.(3).(1) = Spider)
 let _ = assert (world.(3).(0) = Camel)
@@ -28,7 +28,7 @@ let _ = assert (!lives = 11)
 let _ = Printf.printf "spider_attack :                    OK \n"
 
 (* Le serpent essaye de récupérer la clé *)
-let () = level_number := 42 
+let _ = level_number := 42 
 let _ = assert (move (1, 0) (0, 0) = (1, 0))
 let _ = assert (world.(1).(0) = Snake)
 let _ = assert (world.(0).(0) = Key)
@@ -36,7 +36,7 @@ let _ = assert (!level_number = 42)
 let _ = Printf.printf "entity_key_collapse_behaviour :    OK \n"
 
 (* Le chameau du haut essaye de récupérer la clé *)
-let () = level_number := 42
+let _ = level_number := 42
 let _ = assert (move (0, 1) (0, 0) = (0, 1))
 let _ = assert (world.(0).(1) = Camel)
 let _ = assert (world.(0).(0) = Key)
@@ -46,7 +46,7 @@ let _ = Printf.printf "camel_key_collapse_behaviour :     OK \n"
 (* L'araignée tue le chameau du bas : 
    Le assert ne passe que si l'effet End_of_game est catch
    et que la position renvoyée est celle du camel *)
-let () = lives := 1
+let _ = lives := 1
 let _ = assert (
   try let _ = move (3, 1) (3, 0) in false with
   | effect End_of_game pos, _ -> (pos = (3, 0))
@@ -98,40 +98,40 @@ let _ = Printf.printf "descrete_ray_cast right_to_left :  OK \n"
     
 (* Cas limite ou il n'y a qu'une case vide *)
 let monde_plein = Array.make_matrix width height Snake
-let () = monde_plein.(12).(7) <- Empty
-let () = override_world monde_plein
-let () = assert(safe_random_position () = (12, 7))
+let _ = monde_plein.(12).(7) <- Empty
+let _ = override_world monde_plein
+let _ = assert(safe_random_position () = (12, 7))
 let _ = Printf.printf "safe_random_position :             OK \n"
 
 (* Test si [a_star] renvoie bien un chemin le plus court*)
-let () = override_world [|
+let _ = override_world [|
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Camel ;Empty ;Empty ;Empty ;Monkey|];
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Empty ;Empty ;Empty |]|]
 let length = List.length (a_star (2, 4) (2, 0) distance)
-let () = assert(length = 4)
+let _ = assert(length = 4)
 let _ = Printf.printf "a_star cas 1 :                     OK \n"
 
-let () = override_world [|
+let _ = override_world [|
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Cactus;Empty ;Empty |];
   [|Camel ;Empty ;Cactus;Empty ;Empty |];
   [|Empty ;Empty ;Cactus;Empty ;Monkey|];
   [|Empty ;Empty ;Empty ;Empty ;Empty |]|]
 let length = List.length (a_star (3, 4) (2, 0) distance)
-let () = assert(length = 7)
+let _ = assert(length = 7)
 let _ = Printf.printf "a_star cas 2 :                     OK \n"
 
-let () = override_world [|
+let _ = override_world [|
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Cactus;Empty ;Empty |];
   [|Camel ;Empty ;Cactus;Empty ;Empty |];
   [|Empty ;Empty ;Cactus;Empty ;Monkey|];
   [|Empty ;Empty ;Cactus;Empty ;Empty |]|]
 let length = List.length (a_star (3, 4) (2, 0) distance)
-let () = assert(length = 9)
+let _ = assert(length = 9)
 let _ = Printf.printf "a_star cas 3 :                     OK \n"
 
 
