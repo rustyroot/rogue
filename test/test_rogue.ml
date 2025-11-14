@@ -143,7 +143,7 @@ let () = Printf.printf ("OK\n")
 
 
 (* Test si [a_star] renvoie bien un chemin le plus court*)
-let () = Printf.printf "a_star cas 1 :                     "
+let () = Printf.printf "a_star no_obstacle :               "
 let _ = override_world [|
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
@@ -154,7 +154,7 @@ let length = List.length (a_star (2, 4) (2, 0) distance)
 let _ = assert(length = 4)
 let () = Printf.printf "OK \n"
 
-let () = Printf.printf "a_star cas 2 :                     "
+let () = Printf.printf "a_star small_wall :                "
 let _ = override_world [|
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Cactus;Empty ;Empty |];
@@ -165,7 +165,7 @@ let length = List.length (a_star (3, 4) (2, 0) distance)
 let _ = assert(length = 7)
 let () = Printf.printf "OK \n"
 
-let () = Printf.printf "a_star cas 3 :                     "
+let () = Printf.printf "a_star big_wall :                  "
 let _ = override_world [|
   [|Empty ;Empty ;Empty ;Empty ;Empty |];
   [|Empty ;Empty ;Cactus;Empty ;Empty |];
