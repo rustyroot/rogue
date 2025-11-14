@@ -1,6 +1,6 @@
 (library
   (name roguelib)
-  (modules elephant engine entity file flag light monkey player snake spider ui utils world)
+  (modules elephant engine entity file flag light monkey player snake spider ui utils world level)
   (libraries notty.unix))
 
 (executable

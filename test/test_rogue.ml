@@ -61,26 +61,12 @@ assert (world.(3).(1) = Spider);;
 assert (world.(3).(0) = Camel);;
 assert (!lives = 0);;
 
-(*(* On charge le niveau 9 et on vérifie que chaque entité est présente le bon
-  nombre de fois *)
-let () = level_number := 9
-let () = set_level ()
-let enemies_number = Array.make (Array.length enemies) 0
-let () = 
-for i = 0 to height - 1 do
-  for j = 0 to width - 1 do
-    for enemy = 0 to (Array.length enemies - 1) do
-      if get (i, j) = enemies.(enemy) then
-        enemies_number.(enemy) <- enemies_number.(enemy) + 1
-      else();
-    done;
-  done;
-done
-let () = assert (enemies_number = levels_enemies.(!level_number));*)
-
-    
-
-
+(* Cas limite ou il n'y a qu'une case vide *)
+let monde_plein = Array.make_matrix width height Snake
+let () = monde_plein.(12).(7) <- Empty
+let () = override_world monde_plein
+let () = assert(safe_random_position () = (12, 7))
+let () = Printf.printf "safe_random_position : OK\n"
 
 
 
