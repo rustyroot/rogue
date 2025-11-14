@@ -109,9 +109,9 @@ Implémente la logique des araignée comme décrit dans le sujet ainsi que celle
 
 Implémente la logique de l'éléphant comme décrit dans le sujet.
 
-### file.ml
+### heap.ml
 
-Implémentation d'une file de priorité min nécessaire pour A*.
+Implémentation d'un tas min pour l'utiliser comme file de priorité min nécessaire pour A*.
 
 ### monkey.ml
 
@@ -131,7 +131,7 @@ Le singe est une entité qui utilise l'algorithme A* pour trouver le chameau.
 
 ### Objectif système de jeu (keys and levels)
 
-Avec l'option d'exécution -d, on active le système de jeu.
+Avec l'option d'exécution -l, on active le système de jeu.
 
 Dans chaque niveau, on retrouve une clé et différents ennemis. Le but est de rejoindre la clé sans se faire toucher par les ennemis.
 
@@ -142,3 +142,7 @@ Les niveaux 0 à 10 sont implémentés, à partir du 11ème on répète en boucl
 Lorsqu'on meurt, le prochain input ferme le jeu et on affiche le nombre de niveaux complétés.
 
 ### Objectif visibilité (light)
+
+Avec l'option d'exécution -d, on active la visibilité restreinte.
+
+Des rayons (discrets) de lumières sont envoyés depuis le Camel vers l'ensemble des cases, on éclaire les cases tant que le rayon ne rencontre pas d'obstacle.
