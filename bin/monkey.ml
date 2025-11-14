@@ -115,17 +115,17 @@ let a_star (start : int*int) (goal : int*int) (h : (int*int) -> (int*int) -> int
 
 
 
-
-let next (pos : int*int) : int*int= 
+(** [next_pos_a_star] cherche le prochain mouvement à faire pour le singe depuis [pos] selon [a_star] *)
+let next_pos_a_star (pos : int*int) : int*int= 
   match a_star pos (get_pos_camel()) distance with
     |[] -> failwith "pas possible"
     |p::_ -> p
 
-(** [snake current_pos] effectue tous les prochains tours du serpent à partir de la position 
-    [current_pos] (choisir aléatoirement une entrée, se déplacer en conséquence, recommencer)*)
+(** [monkey] cherche le prochain mouvement pour le singe selon [a_star]
+    et l'effectue depuis sa position *)
 let rec monkey (monkey_instance : entity) : unit =
   let current_position = monkey_instance#get_pos in
-  let new_position = next current_position in
+  let new_position = next_pos_a_star current_position in
   let new_position = move current_position new_position in
   monkey_instance#set_pos new_position;
   perform End_of_turn;

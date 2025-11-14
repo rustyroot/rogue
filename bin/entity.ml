@@ -8,6 +8,9 @@ open Effect.Deep
 (** L'effet [End_of_level] indique que le chameau a trouvé la clé
     et qu'il faut changer de level*)
 type _ Effect.t += End_of_level: unit t
+
+(** L'effet [End_of_game] indique que le chameau a été tué et qu'il
+    faut terminer le jeu *)
 type _ Effect.t += End_of_game: (int*int)->unit t
 
 class entity (initial_position : int*int) =

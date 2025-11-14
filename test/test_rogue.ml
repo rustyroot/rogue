@@ -2,6 +2,7 @@ open Roguelib
 open World
 open Entity
 open Light
+open Monkey
 
 let () = override_world [|
   [|Key   ;Camel ;Empty ;Empty ;Empty|];
@@ -101,6 +102,38 @@ let () = monde_plein.(12).(7) <- Empty
 let () = override_world monde_plein
 let () = assert(safe_random_position () = (12, 7))
 let _ = Printf.printf "safe_random_position :             OK \n"
+
+(* Test si [a_star] renvoie bien un chemin le plus court*)
+let () = override_world [|
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Camel ;Empty ;Empty ;Empty ;Monkey|];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |]|]
+let length = List.length (a_star (2, 4) (2, 0) distance)
+let () = assert(length = 4)
+let _ = Printf.printf "a_star cas 1 :                     OK \n"
+
+let () = override_world [|
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Empty |];
+  [|Camel ;Empty ;Cactus;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Monkey|];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |]|]
+let length = List.length (a_star (3, 4) (2, 0) distance)
+let () = assert(length = 7)
+let _ = Printf.printf "a_star cas 2 :                     OK \n"
+
+let () = override_world [|
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Empty |];
+  [|Camel ;Empty ;Cactus;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Monkey|];
+  [|Empty ;Empty ;Cactus;Empty ;Empty |]|]
+let length = List.length (a_star (3, 4) (2, 0) distance)
+let () = assert(length = 9)
+let _ = Printf.printf "a_star cas 3 :                     OK \n"
+
 
 
 
