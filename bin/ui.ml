@@ -94,7 +94,10 @@ let draw_cell (c : cell) : image = I.string A.empty (string_of_cell c)
 
 let draw_world () : image =
   I.(<->) 
-    (I.string A.empty (string_of_array hud))
+    (I.(<->)
+      (I.string A.empty (string_of_array hud))
+      (I.hcat @@ Array.to_list @@ Array.make width (I.string A.empty "══"))
+      )
     (I.hcat
       @@ Array.to_list
       @@ Array.map
