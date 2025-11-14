@@ -30,13 +30,13 @@ let distance (pos1 : int*int) (pos2 : int*int) : int =
   let (l2,c2) = pos2 in
   (abs (l1 - l2) + abs (c1 - c2))
 
-
+(** [reconstruct_path] reconstruit le chemin de [start] à [goal] pour le singe *)
 let reconstruct_path (map : (int*int) array array) (goal : int*int) (start : int*int) : (int*int) list =
-  let rec aux p acc = 
-    if p = start then acc 
-    else let (l,c) = p in aux (map.(l).(c)) (p::acc)
+  let rec reconstruct_from_goal position path_acc = 
+    if position = start then path_acc
+    else let (l,c) = position in reconstruct_from_goal (map.(l).(c)) (position::path_acc)
   in
-  aux goal []
+  reconstruct_from_goal goal []
 
 (** [get_neighbors] renvoie la liste des voisins [Empty] ou [Camel] de [pos] *)
 let get_neighbors (position : int*int) : (int*int) list =
@@ -47,7 +47,6 @@ let get_neighbors (position : int*int) : (int*int) list =
       |_ -> false
   in
   List.filter is_empty_or_camel [(l+1,c);(l-1,c);(l,c+1);(l,c-1)]
-
 
 let pop_min (liste : ((int*int)*int) list) : ((int*int)*(((int*int)*int) list)) = 
   let rec cherche l acc x_min v_min = match l with
