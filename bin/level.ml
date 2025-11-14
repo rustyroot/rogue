@@ -20,7 +20,7 @@ let enemies =
 let enemies_cell = [| Snake; Elephant; Spider; Monkey |]
 
 (* Seul niveau utilisé quand on désactive le système de niveau *)
-let base_level = [| 1; 1; 1; 0 |]
+let base_level = [| 1; 1; 1; 1 |]
 
 (* Jeu complet avec 11 niveaux uniques (puis on répète sur le dernier) *)
 let levels_enemies =

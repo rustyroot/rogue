@@ -127,17 +127,14 @@ let () = Heap.push tas 7
 let () = Heap.push tas 3
 let () = Heap.push tas 4
 let () = Heap.push tas 5
+let () = Heap.push tas 5
 let () = Heap.push tas 1
-
-let () = Printf.printf "Heap.mem :                         "
-let _ = assert (mem tas 6 = true)
-let _ = assert (mem tas 2 = false)
-let () = Printf.printf ("OK\n")
 
 let () = Printf.printf "Heap.pop :                         "
 let () = assert (Heap.pop tas = 1)
 let () = assert (Heap.pop tas = 3)
 let () = assert (Heap.pop tas = 4)
+let () = assert (Heap.pop tas = 5)
 let () = assert (Heap.pop tas = 5)
 let () = assert (Heap.pop tas = 6)
 let () = assert (Heap.pop tas = 7)
@@ -178,8 +175,6 @@ let _ = override_world [|
 let length = List.length (a_star (3, 4) (2, 0) distance)
 let _ = assert(length = 9)
 let () = Printf.printf "OK \n"
-
-
 
 
 

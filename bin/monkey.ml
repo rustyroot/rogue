@@ -69,7 +69,6 @@ let a_star (start : int * int) (goal : int * int)
 
   while (not !goal_found) && not (is_empty file) do
     let (x, y), _ = Heap.pop file in
-    Printf.printf "%d %d\n" x y;
     if (x, y) = goal then goal_found := true
     else
       let voisins = get_neighbors (x, y) in
@@ -79,13 +78,13 @@ let a_star (start : int * int) (goal : int * int)
         if nouvelle_distance < distance.(x').(y') then (
           map.(x').(y') <- (x, y);
           distance.(x').(y') <- nouvelle_distance;
-          let faux_scores = nouvelle_distance + h voisin goal in
-          Heap.push file (voisin, faux_scores))
+          let poids = nouvelle_distance + h voisin goal in
+          Heap.push file (voisin, poids))
       in
       List.iter upgrade voisins
   done;
 
-  if !goal_found then reconstruct_path map start goal else raise No_path_found
+  if !goal_found then reconstruct_path map goal start else raise No_path_found
 
 (** [next_pos_a_star] cherche le prochain mouvement à faire pour le singe depuis
     [pos] selon [a_star] *)
