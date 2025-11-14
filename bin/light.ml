@@ -38,6 +38,7 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
   *)
   (* I *)
   if src = dst then [ src ]
+
   else
     let x, y = src in
     let x', y' = dst in
@@ -46,15 +47,16 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
     if x' < x then
       (* On réduit les cas étudiés en s'intéressant uniquement au droite orientée allant de gauche à droite*)
       List.rev (descrete_ray_cast dst src) 
+
     (* III *)
     else if x = x' then (* On gère à part les droites verticales*)
       if y' > y then (* droite verticale montante *)
         List.init (y' - y + 1) (fun k -> (x, y + k))
-      else
-        (* y' <= y *)
+      else (* y' <= y *)
         (* droite verticale descendante *)
         List.init (y - y' + 1) (fun k -> (x, y - k))
     else begin
+
       (* IV *)
       let f = affine_function src dst in
       let f_right_border =
