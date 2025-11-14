@@ -30,7 +30,7 @@ let move (old_position : int * int) (new_position : int * int) : int * int =
     set new_position character ;
     new_position
   | Camel ->
-    if get old_position != Camel then (* Le chameau ne se retire pas de point quand il se recontre lui même *)
+    if get old_position != Camel then (* Le chameau ne se retire pas de vie quand il se rencontre lui même *)
       (lives := !lives - 1;
       if !lives = 0 then perform (End_of_game new_position))
     else
