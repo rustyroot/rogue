@@ -13,7 +13,9 @@ let get_pos_camel () : int * int =
     if i >= width then failwith "pas de chameau"
     else begin
       if j >= height then boucle (i + 1) 0
-      else match get (i, j) with Camel -> (i, j) | _ -> boucle i (j + 1)
+      else match get (i, j) with
+      | Camel -> (i, j)
+      | _ -> boucle i (j + 1)
     end
   in
   boucle 0 0
