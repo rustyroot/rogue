@@ -3,8 +3,9 @@ open World
 open Entity
 open Light
 open Heap
+open Monkey
 
-let () = override_world [|
+let _ = override_world [|
   [|Key   ;Camel ;Empty ;Empty ;Empty|];
   [|Snake ;Empty ;Empty ;Empty ;Empty|];
   [|Empty ;Empty ;Empty ;Empty ;Empty|];
@@ -115,13 +116,11 @@ let () = override_world monde_plein
 let () = assert(safe_random_position () = (12, 7))
 let () = Printf.printf "OK \n"
 
-
 (* Test d'un tas min d'entier *)
 let tas = Heap.init 50 (>=) 8
 let () = Printf.printf "Heap.is_empty :                    "
 let _ = assert (is_empty tas = false)
 let () = Printf.printf ("OK\n")
-
 
 let () = Heap.push tas 6
 let () = Heap.push tas 7
@@ -144,6 +143,51 @@ let () = assert (Heap.pop tas = 6)
 let () = assert (Heap.pop tas = 7)
 let () = assert (Heap.pop tas = 8)
 let () = Printf.printf ("OK\n")
+
+
+(* Test si [a_star] renvoie bien un chemin le plus court*)
+let () = Printf.printf "a_star cas 1 :                     "
+let _ = override_world [|
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Camel ;Empty ;Empty ;Empty ;Monkey|];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |]|]
+let length = List.length (a_star (2, 4) (2, 0) distance)
+let _ = assert(length = 4)
+let () = Printf.printf "OK \n"
+
+let () = Printf.printf "a_star cas 2 :                     "
+let _ = override_world [|
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Empty |];
+  [|Camel ;Empty ;Cactus;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Monkey|];
+  [|Empty ;Empty ;Empty ;Empty ;Empty |]|]
+let length = List.length (a_star (3, 4) (2, 0) distance)
+let _ = assert(length = 7)
+let () = Printf.printf "OK \n"
+
+let () = Printf.printf "a_star cas 3 :                     "
+let _ = override_world [|
+  [|Empty ;Empty ;Empty ;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Empty |];
+  [|Camel ;Empty ;Cactus;Empty ;Empty |];
+  [|Empty ;Empty ;Cactus;Empty ;Monkey|];
+  [|Empty ;Empty ;Cactus;Empty ;Empty |]|]
+let length = List.length (a_star (3, 4) (2, 0) distance)
+let _ = assert(length = 9)
+let () = Printf.printf "OK \n"
+
+
+
+
+
+
+
+
+
+
 
 
 

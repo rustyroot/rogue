@@ -46,6 +46,17 @@ make build
 ./rogue --level-activated --darkness-on
 ```
 
+## Jeu de tests
+
+Les tests sont disponibles dans test/test_rogue.ml.
+
+On peut les lancer avec :
+
+```sh
+make test
+```
+Cela affiche `OK` pour chaque test passé.
+
 ## Présentation des fichiers du projets
 
 Voici une présentation succinte des différents fichiers composants le projet
@@ -69,6 +80,10 @@ Contient les deux paramètres pour l'exécution ainsi que leur récupération vi
 ### ui.ml
 
 Ce fichier rassemble les fonctions d'affichage que ce soit de la scène principal ou des informations affichées au joueur (HUD).
+
+### level.ml
+
+Contient les niveaux et la fonctions pour changer le monde avec le nouveau niveau.
 
 ### main.ml
 
@@ -109,6 +124,10 @@ Implémentation pour l'objectif "visibilité"
 ## Extensions principales
 
 ### Objectif entités malines (Monkey)
+
+Le singe est une entité qui utilise l'algorithme A* pour trouver le chameau.
+
+À chaque tour, on calcule le prochain meilleur coup pour aller vers le chameau.
 
 ### Objectif système de jeu (keys and levels)
 
