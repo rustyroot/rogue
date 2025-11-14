@@ -35,12 +35,6 @@ make build
 ```sh
 # launch the program whitout any feature, and one entity of each type
 ./rogue
-<<<<<<< HEAD
-=======
-./rogue -l -d
-./rogue --darkness-on
-```
->>>>>>> d820db1f12e872a2c8cd1682538377494cba14ad
 
 # Reduice the visibility of the Camel
 ./rogue --darkness-on
