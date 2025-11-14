@@ -46,6 +46,17 @@ make build
 ./rogue --level-activated --darkness-on
 ```
 
+## Jeu de tests
+
+Les tests sont disponibles dans test/test_rogue.ml.
+
+On peut les lancer avec :
+
+```sh
+make test
+```
+Cela affiche `OK` pour chaque test passé.
+
 ## Présentation des fichiers du projets
 
 Voici une présentation succinte des différents fichiers composants le projet
