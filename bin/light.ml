@@ -18,13 +18,35 @@ let affine_function (src : int * int) (dst : int * int) : float -> float =
     est dans l'ordre (dans le sens de parcours du segment de src à dst)*)
 let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
     =
+  (* 
+    Cette fonction est un peu touffue, je vais tenter de l'expliquer du mieux que je peux :
+    (* I *) On gère le cas du point (dst = src)
+    (* II *) On réduit les cas étudiés en s'intéressant uniquement au droite orientée allant de gauche à droite
+    (* III *) On gère le cas d'un segment vertical (x = x')
+    (* IV *) Dans le cas général :
+      On itère pour chaque entier i entre x et x',
+      on regarde left_y (resp right_y) la hauteur de la case intersecté 
+      par le rayon sur la bordure gauche (à droite)
+      On ajoute toutes les cases entre les deux dans la liste
+
+    (* V *)
+      Se faisant nous avons des cases précédant la source et au-delà de la destination, 
+      on les retire à l'aide de cut_out_of_range
+
+    (* VI *)
+      Calcul effectif de la liste.
+  *)
+  (* I *)
   if src = dst then [ src ]
   else
     let x, y = src in
     let x', y' = dst in
+
+    (* II *)
     if x' < x then
       (* On réduit les cas étudiés en s'intéressant uniquement au droite orientée allant de gauche à droite*)
-      List.rev (descrete_ray_cast dst src)
+      List.rev (descrete_ray_cast dst src) 
+    (* III *)
     else if x = x' then (* On gère à part les droites verticales*)
       if y' > y then (* droite verticale montante *)
         List.init (y' - y + 1) (fun k -> (x, y + k))
@@ -33,6 +55,7 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
         (* droite verticale descendante *)
         List.init (y - y' + 1) (fun k -> (x, y - k))
     else begin
+      (* IV *)
       let f = affine_function src dst in
       let f_right_border =
        fun x -> int_of_float (ceil (f (float_of_int x +. 0.5) -. 0.5))
@@ -51,6 +74,7 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
           in
           construct_list (x + 1) right_y (acc @ x_cell_list)
       in
+      (* V *)
       let rec cut_out_of_range (cell_list : (int * int) list)
           (begin_pass : bool) : (int * int) list =
         match cell_list with
@@ -61,6 +85,8 @@ let rec descrete_ray_cast (src : int * int) (dst : int * int) : (int * int) list
         | _ :: tail -> cut_out_of_range tail begin_pass
         | [] -> failwith "descrete_ray_cast failed"
       in
+
+      (* VI *)
       cut_out_of_range (construct_list x (f_right_border (x - 1)) []) false
     end
 
