@@ -125,7 +125,7 @@ Implémentation pour l'objectif "visibilité"
 
 ### Objectif entités malines (Monkey)
 
-Le Singe est une entité qui utilise l'algorithme A* pour trouver le chameau.
+Le singe est une entité qui utilise l'algorithme A* pour trouver le chameau.
 
 À chaque tour, on calcule le prochain meilleur coup pour aller vers le chameau.
 
