@@ -62,8 +62,12 @@ let init_hud () =
   hud.(start_heart_writting + 1) <- heart;
   hud.(start_heart_writting + 2) <- heart;
 
-  string_to_hud start_level_writting level_str;
-  update_level_hud ()
+  if level_activated then
+    (
+    string_to_hud start_level_writting level_str;
+    update_level_hud ()
+    )
+  else ()
 
 
 
@@ -106,7 +110,9 @@ let terminal : Term.t = Term.create ()
 
 (** [render ()] met à jour l'HUD puis l'affichage courant dans le terminal*)
 let render () : unit =
-  update_level_hud () ;
+  if level_activated then
+    update_level_hud ()
+  else () ;
   update_lives_hud () ;
   Term.image terminal (draw_world ())
 let () = render ()
