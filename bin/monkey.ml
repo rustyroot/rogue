@@ -6,7 +6,6 @@ open Effect.Deep
 open Engine
 open Entity
 open World
-open File
 
 (** [get_cell_camel ()]
     renvoie la position du chameau*)
@@ -39,6 +38,7 @@ let reconstruct_path (map : (int*int) array array) (goal : int*int) (start : int
   in
   aux goal []
 
+(** [get_neighbors] renvoie la liste des voisins [Empty] ou [Camel] de [pos] *)
 let get_neighbors (position : int*int) : (int*int) list =
   let (l,c) = position in
   let is_empty_or_camel pos =
@@ -47,6 +47,7 @@ let get_neighbors (position : int*int) : (int*int) list =
       |_ -> false
   in
   List.filter is_empty_or_camel [(l+1,c);(l-1,c);(l,c+1);(l,c-1)]
+
 
 let pop_min (liste : ((int*int)*int) list) : ((int*int)*(((int*int)*int) list)) = 
   let rec cherche l acc x_min v_min = match l with
