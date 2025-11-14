@@ -42,7 +42,8 @@ let rec play () : unit =
   | effect End_of_game camel_position, _ ->
     set camel_position Tomb;
     render();
-    Printf.printf "Final Level : %d\n" !level_number;
+    if level_activated then
+      Printf.printf "Final Level : %d\n" !level_number;
     match Term.event terminal with
     | _ -> exit 0
 

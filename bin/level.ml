@@ -72,15 +72,16 @@ let set_level () : unit =
         done
   done;
 
-  (* On génère la clé et le chameau 
-     si [is_curse_darkness_on] le chameau ne peut voir que près de lui
-     sinon il peut voir tout le [world] *)
-  set (safe_random_position ()) Key;
+  (* On génère la clé (si nécessaire) *)
+  if level_activated then
+    set (safe_random_position ()) Key;
+  
+  (* Position initial du chameau*)
   let camel_initial_position = safe_random_position () in
-  set camel_initial_position Camel;
+    set camel_initial_position Camel;
+
+  (* On calcul la pour la première itération (si nécessaire)*)
   if is_curse_darkness_on then
-    enlighten_the_world camel_initial_position
-  else
-    ();
+    enlighten_the_world camel_initial_position;
   let camel_instance = new entity camel_initial_position in 
   Queue.add (fun () -> player (fun () -> camel camel_instance)) queue
