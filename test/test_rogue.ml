@@ -94,13 +94,13 @@ let _ = assert (
   descrete_ray_cast (5, 3) (2, 4) =
   [(5, 3); (4, 3); (3, 3); (3, 4); (2, 4)])
 let _ = Printf.printf "descrete_ray_cast right_to_left :  OK \n"
-
     
 (* Cas limite ou il n'y a qu'une case vide *)
 let monde_plein = Array.make_matrix width height Snake
 let () = monde_plein.(12).(7) <- Empty
 let () = override_world monde_plein
 let () = assert(safe_random_position () = (12, 7))
+let _ = Printf.printf "safe_random_position :             OK \n"
 
 
 
