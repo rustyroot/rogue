@@ -70,6 +70,10 @@ Contient les deux paramètres pour l'exécution ainsi que leur récupération vi
 
 Ce fichier rassemble les fonctions d'affichage que ce soit de la scène principal ou des informations affichées au joueur (HUD).
 
+### level.ml
+
+Contient les niveaux et la fonctions pour changer le monde avec le nouveau niveau.
+
 ### main.ml
 
 Point d'entrée du programme, initialise les différents éléments avant de lancer la boucle de jeu.
@@ -109,6 +113,8 @@ Implémentation pour l'objectif "visibilité"
 ## Extensions principales
 
 ### Objectif entités malines (Monkey)
+
+Le Singe est une entité qui utilise l'algorithme A* pour trouver le chameau.
 
 ### Objectif système de jeu (keys and levels)
 
