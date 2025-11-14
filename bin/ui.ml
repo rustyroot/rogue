@@ -66,8 +66,6 @@ let init_hud () =
     update_level_hud ())
   else ()
 
-let () = init_hud ()
-
 (** Affichage du contenu d'une cellule.*)
 let string_of_cell : cell -> string = function
   | Empty -> "  "
@@ -105,5 +103,3 @@ let render () : unit =
   if level_activated then update_level_hud () else ();
   update_lives_hud ();
   Term.image terminal (draw_world ())
-
-let () = render ()

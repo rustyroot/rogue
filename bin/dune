@@ -1,7 +1,21 @@
 (library
-  (name roguelib)
-  (modules elephant engine entity flag light monkey player snake spider ui utils world level heap)
-  (libraries notty.unix))
+ (name roguelib)
+ (modules
+  elephant
+  engine
+  entity
+  flag
+  light
+  monkey
+  player
+  snake
+  spider
+  ui
+  utils
+  world
+  level
+  heap)
+ (libraries notty.unix))
 
 (executable
  (public_name rogue)

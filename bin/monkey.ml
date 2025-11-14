@@ -12,9 +12,7 @@ let get_pos_camel () : int * int =
     if i >= width then failwith "pas de chameau"
     else begin
       if j >= height then boucle (i + 1) 0
-      else match get (i, j) with
-      | Camel -> (i, j)
-      | _ -> boucle i (j + 1)
+      else match get (i, j) with Camel -> (i, j) | _ -> boucle i (j + 1)
     end
   in
   boucle 0 0
@@ -56,42 +54,38 @@ let compare (elt1 : (int * int) * int) (elt2 : (int * int) * int) : bool =
 
 exception No_path_found
 
-(** [a_star start goal h] renvoit un chemin de [start] à [goal] selon l'heuristique [h]*)
-let a_star (start : int * int) (goal : int * int) (h : int * int -> int * int -> int) : (int * int) list =
-  let map = Array.make_matrix width height (-1, -1) in (* Pour reconstruire le chemin *)
-  let distance = Array.make_matrix width height max_int in 
+(** [a_star start goal h] renvoit un chemin de [start] à [goal] selon
+    l'heuristique [h]*)
+let a_star (start : int * int) (goal : int * int)
+    (h : int * int -> int * int -> int) : (int * int) list =
+  let map = Array.make_matrix width height (-1, -1) in
+  let distance = Array.make_matrix width height max_int in
   let goal_found = ref false in
 
-  let x, y = start in
-  map.(x).(y) <- start;
-  distance.(x).(y) <- 0;
-  let file = Heap.init (width*height) compare (start, 0) in
+  let x_start, y_start = start in
+  map.(x_start).(y_start) <- start;
+  distance.(x_start).(y_start) <- 0;
+  let file = Heap.init (width * height) compare (start, 0) in
 
-  while (not !goal_found) && (not (is_empty file)) do
+  while (not !goal_found) && not (is_empty file) do
     let (x, y), _ = Heap.pop file in
     Printf.printf "%d %d\n" x y;
-    if (x, y) = goal then
-      goal_found := true
-    else (
+    if (x, y) = goal then goal_found := true
+    else
       let voisins = get_neighbors (x, y) in
-      let upgrade (voisin : (int * int)) =
+      let upgrade (voisin : int * int) =
         let x', y' = voisin in
         let nouvelle_distance = distance.(x).(y) + 1 in
         if nouvelle_distance < distance.(x').(y') then (
           map.(x').(y') <- (x, y);
           distance.(x').(y') <- nouvelle_distance;
           let faux_scores = nouvelle_distance + h voisin goal in
-          Heap.push file ((x', y'), faux_scores);
-        )
+          Heap.push file (voisin, faux_scores))
       in
       List.iter upgrade voisins
-    )
   done;
 
-  if !goal_found then
-    reconstruct_path map start goal
-  else
-    raise No_path_found
+  if !goal_found then reconstruct_path map start goal else raise No_path_found
 
 (** [next_pos_a_star] cherche le prochain mouvement à faire pour le singe depuis
     [pos] selon [a_star] *)

@@ -50,6 +50,7 @@ let rec play () : unit =
 
 (* Début du jeu *)
 
+let () = init_hud ()
 let () = set_level ()
 let () = play ()
 
