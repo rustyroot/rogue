@@ -48,7 +48,7 @@ assert (world.(0).(1) = Camel);;
 assert (world.(0).(0) = Key);;
 assert (!level_number = 42) (* Comportement voulu car ici level_activated = false *)
 
-(* L'araignée attaque le chameau du bas : 
+(* L'araignée tue le chameau du bas : 
    Le assert ne passe que si l'effet End_of_game est catch
    et que la position renvoyée est celle du camel *)
 let () = lives := 1;;
@@ -59,7 +59,31 @@ assert (
   );;
 assert (world.(3).(1) = Spider);;
 assert (world.(3).(0) = Camel);;
-assert (!lives = 0)
+assert (!lives = 0);;
+
+(*(* On charge le niveau 9 et on vérifie que chaque entité est présente le bon
+  nombre de fois *)
+let () = level_number := 9
+let () = set_level ()
+let enemies_number = Array.make (Array.length enemies) 0
+let () = 
+for i = 0 to height - 1 do
+  for j = 0 to width - 1 do
+    for enemy = 0 to (Array.length enemies - 1) do
+      if get (i, j) = enemies.(enemy) then
+        enemies_number.(enemy) <- enemies_number.(enemy) + 1
+      else();
+    done;
+  done;
+done
+let () = assert (enemies_number = levels_enemies.(!level_number));*)
+
+    
+
+
+
+
+
 
 
 
