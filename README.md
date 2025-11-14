@@ -18,7 +18,7 @@
 make build
 ```
 
-## Exemples d'usages
+## Paramètres et exemples d'usages
 
 <table>
     <tbody>
