@@ -116,6 +116,8 @@ Implémentation pour l'objectif "visibilité"
 
 Le Singe est une entité qui utilise l'algorithme A* pour trouver le chameau.
 
+À chaque tour, on calcule le prochain meilleur coup pour aller vers le chameau.
+
 ### Objectif système de jeu (keys and levels)
 
 Avec l'option d'exécution -d, on active le système de jeu.
