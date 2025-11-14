@@ -4,3 +4,6 @@ build :
 
 run : build
 	./rogue
+
+test : build
+	dune runtest -f
