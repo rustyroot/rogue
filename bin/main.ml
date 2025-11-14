@@ -68,12 +68,12 @@ let set_level () : unit =
       for _ = 1 to (level_enemies.(i)) do
         match enemies.(i) with
         |Elephant(elephant) ->
-          let elephant_initial_position = random_position () in
+          let elephant_initial_position = safe_random_position () in
           let () = set elephant_initial_position enemies_cell.(i) in
           let elephant_instance = new elephant elephant_initial_position in
           Queue.add (fun () -> player (fun () -> elephant elephant_instance)) queue
         |Entity(enemy) ->
-          let entity_initial_position = random_position () in
+          let entity_initial_position = safe_random_position () in
           let () = set entity_initial_position enemies_cell.(i) in
           let entity_instance = new entity entity_initial_position in
           Queue.add (fun () -> player (fun () -> enemy entity_instance)) queue
@@ -83,8 +83,8 @@ let set_level () : unit =
   (* On génère la clé et le chameau 
      si [is_curse_darkness_on] le chameau ne peut voir que près de lui
      sinon il peut voir tout le [world] *)
-  set (random_position ()) Key;
-  let camel_initial_position = random_position () in
+  set (safe_random_position ()) Key;
+  let camel_initial_position = safe_random_position () in
   set camel_initial_position Camel;
   if is_curse_darkness_on then
     enlighten_the_world camel_initial_position

@@ -21,13 +21,17 @@ make build
 ## Exemples d'usages
 
 ```sh
+# launch the program whitout any feature, and one entity of each type
 ./rogue
-```
 
-ou
+# Reduice the visibility of the Camel
+./rogue --darkness-on
 
-```sh
-make run
+# Play 10 levels (the 10th will loop) with prepared amount of each entity type
+./rogue --level-activated
+
+# Both for more challenges
+./rogue --level-activated --darkness-on
 ```
 
 ## Présentation des fichiers du projets

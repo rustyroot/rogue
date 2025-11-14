@@ -26,6 +26,13 @@ let set (x, y : int * int) (v : cell) : unit = world.(x).(y) <- v
 (** [random_position ()] renvoie une position aléatoire dans le monde*)
 let random_position () : int * int = (Random.int width, Random.int height)
 
+let rec safe_random_position () : int * int = 
+    let position = random_position () in
+    if get position = Empty then
+        position
+    else
+        safe_random_position ()
+
 (** [world_clear] *)
 let world_clear () : unit =
     for i = 0 to width - 1 do
